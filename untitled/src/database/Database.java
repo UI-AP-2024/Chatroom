@@ -16,22 +16,12 @@ public class Database
             database=new Database();
         return database;
     }
-    public void makeConnection() {
-        try
-        {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con= DriverManager.getConnection(url,userName,password);
-        }catch (Exception exception)
-        {
-            System.out.println("error"+exception.getMessage());
-        }
+    public void makeConnection() throws Exception{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        con= DriverManager.getConnection(url,userName,password);
     }
-    public void finish()
+    public void finish()throws Exception
     {
-        try{
-            con.close();
-        }catch (Exception exception){
-            System.out.println("error"+exception.getMessage());
-        }
+        con.close();
     }
 }
