@@ -28,6 +28,7 @@ public class View
                     writer.println("exit");
                     writer.flush();
                     Client.getSocket().close();
+                    Client.setRun(false);
                     break;
                 }
                 else if(input.compareTo("pv")==0)
