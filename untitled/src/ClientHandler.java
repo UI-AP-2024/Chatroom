@@ -45,7 +45,9 @@ public class ClientHandler extends Thread{
             this.name=bufferedReader.readLine();
             Database.getDatabase().login(name,ID);
             String massage;
-            while ((massage=bufferedReader.readLine()).compareTo("exit")!=0){
+            while ((massage=bufferedReader.readLine())!=null){
+                if(massage.compareTo("exit")==0)
+                    break;
                 num=Database.getDatabase().getMaxNum()+1;
                 Database.getDatabase().saveMassage(num,this.ID,massage);
                 for(ClientHandler client: Database.getDatabase().getClients()){

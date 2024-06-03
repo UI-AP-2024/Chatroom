@@ -17,13 +17,16 @@ public class View
         try(PrintWriter writer=new PrintWriter(Client.getSocket().getOutputStream());)
         {
             Scanner sc=new Scanner(System.in);
-            writer.println(Client.getID()+"-"+Client.getName());
+            writer.println(Client.getID());
+            writer.println(Client.getName());
+            writer.flush();
             while (true)
             {
                 String input=sc.nextLine();
                 if(input.compareTo("exit")==0)
                 {
                     writer.println("exit");
+                    writer.flush();
                     Client.getSocket().close();
                     break;
                 }
@@ -34,7 +37,10 @@ public class View
                 else if(input.compareTo("ping")==0)
                     ;
                 else
+                {
                     writer.println(input);
+                    writer.flush();
+                }
             }
         }catch (Exception exception)
         {
