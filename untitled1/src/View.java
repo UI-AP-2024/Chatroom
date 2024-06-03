@@ -1,4 +1,3 @@
-import database.Database;
 
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -17,16 +16,13 @@ public class View
     {
         try(PrintWriter writer=new PrintWriter(Client.getSocket().getOutputStream());)
         {
-            Database.getDatabase().makeConnection();
             Scanner sc=new Scanner(System.in);
-            Database.getDatabase().login(Client.getName(),Client.getID());
             writer.println(Client.getID()+"-"+Client.getName());
             while (true)
             {
                 String input=sc.nextLine();
                 if(input.compareTo("exit")==0)
                 {
-                    Database.getDatabase().finish();
                     writer.println("exit");
                     Client.getSocket().close();
                     break;
