@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Database
@@ -34,7 +36,21 @@ public class Database
     }
     public void saveMassage(int num,String id,String message)throws Exception
     {
-        String sqlcmd=String.format("INSERT INTO messages (ID,mes,num) VALUES ('%s' ,'%s',%d)",id,message,num);
+        LocalTime time=LocalTime.now();
+        String hour;
+        String minute;
+        String second;
+        if(time.getHour() >=0 && time.getHour()<=9)
+            hour="0"+time.getHour();
+        else hour=String.valueOf(time.getHour());
+        if(time.getMinute() >=0 && time.getMinute()<=9)
+            minute="0"+time.getMinute();
+        else minute=String.valueOf(time.getMinute());
+        if(time.getSecond() >=0 && time.getSecond()<=9)
+            second="0"+time.getSecond();
+        else second=String.valueOf(time.getSecond());
+        String temp=hour+":"+minute+":"+second;
+        String sqlcmd=String.format("INSERT INTO messages (ID,mes,num,time) VALUES ('%s' ,'%s',%d,'%s')",id,message,num,temp);
         Statement statement=con.prepareStatement(sqlcmd);
         statement.execute(sqlcmd);
     }
@@ -68,5 +84,42 @@ public class Database
         }catch (Exception exception){
 
         }
+    }
+    public String searchName(String name){
+        StringBuilder answer=new StringBuilder("Massages from "+name+":\n");
+        try {
+            String query="SELECT mes from messages WHERE ID='"+name+"'";
+            Statement s=con.prepareStatement(query);
+            ResultSet rs=s.executeQuery(query);
+            while (rs.next()){
+                answer.append(rs.getString("mes")).append("\n");
+            }
+        }catch (Exception e){}
+        return answer.toString();
+    }
+    public String searchTime(String time1, String time2){
+        LocalTime startTime=LocalTime.parse(time1);
+        LocalTime endTime=LocalTime.parse(time2);
+        StringBuilder answer=new StringBuilder("Massages from "+time1+" to "+time2+":\n");
+        try {
+            String query="SELECT mes,time,ID from messages";
+            Statement s=con.prepareStatement(query);
+            ResultSet rs=s.executeQuery(query);
+            while (rs.next()){
+                LocalTime time=LocalTime.parse(rs.getString("time"));
+                if(time.isAfter(startTime) && time.isBefore(endTime))
+                    answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
+                else if (time.compareTo(startTime) == 0 && time.isBefore(endTime)) {
+                    answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
+                } else if (time.isAfter(startTime) && time.compareTo(endTime) == 0) {
+                    answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
+                } else if (time.compareTo(startTime) == 0 && time.compareTo(endTime) == 0) {
+                    answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return answer.toString();
     }
 }

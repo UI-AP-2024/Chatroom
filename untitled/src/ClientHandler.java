@@ -54,6 +54,19 @@ public class ClientHandler extends Thread{
                     writer.println("connected");
                     writer.flush();
                 }
+                else if(massage.compareTo("search")==0){
+                    String function=bufferedReader.readLine();
+                    String[] orders=function.split(" ");
+                    PrintWriter writer=new PrintWriter(this.getSocket().getOutputStream());
+                    if(orders.length>1){
+                        writer.write(Database.getDatabase().searchTime(orders[0],orders[2]));
+                        writer.flush();
+                    }
+                    else{
+                        writer.write(Database.getDatabase().searchName(function));
+                        writer.flush();
+                    }
+                }
                 else
                 {
                     num=Database.getDatabase().getMaxNum()+1;
@@ -71,7 +84,7 @@ public class ClientHandler extends Thread{
             this.socket.close();
         }
          catch (Exception e) {
-
+             System.out.println(e.getMessage());
          }
     }
 }
