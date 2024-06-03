@@ -36,7 +36,11 @@ public class View
                 else if(input.compareTo("search")==0)
                     ;
                 else if(input.compareTo("ping")==0)
-                    ;
+                {
+                    Client.setStartTime(System.currentTimeMillis());
+                    writer.println("");
+                    writer.flush();
+                }
                 else
                 {
                     writer.println(input);

@@ -48,13 +48,22 @@ public class ClientHandler extends Thread{
             while ((massage=bufferedReader.readLine())!=null){
                 if(massage.compareTo("exit")==0)
                     break;
-                num=Database.getDatabase().getMaxNum()+1;
-                Database.getDatabase().saveMassage(num,this.ID,massage);
-                for(ClientHandler client: Database.getDatabase().getClients()){
-                    if(client!=null && client.getID().compareTo(this.ID)!=0){
-                        PrintWriter writer=new PrintWriter(client.getSocket().getOutputStream());
-                        writer.write(this.getUserName()+":\n"+massage+"\n");
-                        writer.flush();
+                else if(massage.compareTo("")==0)
+                {
+                    PrintWriter writer=new PrintWriter(this.getSocket().getOutputStream());
+                    writer.println("connected");
+                    writer.flush();
+                }
+                else
+                {
+                    num=Database.getDatabase().getMaxNum()+1;
+                    Database.getDatabase().saveMassage(num,this.ID,massage);
+                    for(ClientHandler client: Database.getDatabase().getClients()){
+                        if(client!=null && client.getID().compareTo(this.ID)!=0){
+                            PrintWriter writer=new PrintWriter(client.getSocket().getOutputStream());
+                            writer.write(this.getUserName()+":\n"+massage+"\n");
+                            writer.flush();
+                        }
                     }
                 }
             }
