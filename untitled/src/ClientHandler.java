@@ -53,7 +53,8 @@ public class ClientHandler extends Thread{
                 for(ClientHandler client: Database.getDatabase().getClients()){
                     if(client!=null && client.getID().compareTo(this.ID)!=0){
                         PrintWriter writer=new PrintWriter(client.getSocket().getOutputStream());
-                        writer.write(this.getName()+":\n"+massage+"\n");
+                        writer.write(this.getUserName()+":\n"+massage+"\n");
+                        writer.flush();
                     }
                 }
             }
@@ -61,7 +62,7 @@ public class ClientHandler extends Thread{
             this.socket.close();
         }
          catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+
+         }
     }
 }

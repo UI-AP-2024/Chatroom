@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -26,6 +28,7 @@ public class View
                 {
                     writer.write("exit\n");
                     Client.getSocket().close();
+                    Client.setRun(false);
                     break;
                 }
                 else if(input.compareTo("pv")==0)

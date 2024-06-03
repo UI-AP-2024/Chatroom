@@ -7,7 +7,7 @@ public class Server {
         try {
             Database.getDatabase().makeConnection();
         } catch (Exception e) {
-            throw e;
+            System.out.println(e.getMessage());
         }
         try {
             ServerSocket serverSocket=new ServerSocket(1234);
@@ -15,10 +15,12 @@ public class Server {
                 Socket socket=serverSocket.accept();
                 ClientHandler clientHandler=new ClientHandler(socket);
                 clientHandler.start();
+                if(Database.getDatabase().getClients().isEmpty())
+                    break;
             }
         } catch (IOException e) {
-            throw e;
+            System.out.println(e.getMessage());
         }
-//        Database.getDatabase().finish();
+        Database.getDatabase().finish();
     }
 }

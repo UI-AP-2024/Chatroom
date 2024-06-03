@@ -66,7 +66,7 @@ public class Database
                 statement.execute(cmd);
             }
         }catch (Exception exception){
-            System.out.println("error "+exception.getMessage());
+
         }
     }
 }
