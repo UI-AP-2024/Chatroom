@@ -29,6 +29,7 @@ public class MainPageView implements Initializable {
         dataOutputStream.writeUTF(messageField.getText());
         String s = dataInputStream.readUTF();
         System.out.println(s);
+        messageField.setText(s);
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
