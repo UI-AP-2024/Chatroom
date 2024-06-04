@@ -35,16 +35,16 @@ public class ChatroomView implements Initializable {
     void sendButtonAction(ActionEvent event) throws IOException {
         Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF("send message" + message.getText());
         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        String[] in = dataInputStream.readUTF().split("-");
-        String m = "";
-        switch (in[0]) {
+
+        dataOutputStream.writeUTF("send message" + message.getText());
+        String[] input = dataInputStream.readUTF().split("-");
+        Label label = new Label();
+        switch (input[0]) {
             case "show message" -> {
-                m = in[1];
+                label.setText(input[1]);
             }
         }
-        Label label = new Label(m);
         messages.getChildren().add(0, label);
     }
     @Override
