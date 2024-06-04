@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 import java.io.DataInputStream;
@@ -39,21 +40,40 @@ public class ChatroomView implements Initializable {
     @FXML
     public void sendButtonAction(ActionEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        if (Objects.equals(message.getText(), ""))
-            message.setText(" ");
         dataOutputStream.writeUTF("send message-" + message.getText());
-        String[] input = dataInputStream.readUTF().split("-");
-        Label label = new Label();
-        switch (input[0]) {
-            case "show message" -> {
-                label.setText(input[1]);
+        showMessages();
+    }
+    public void showMessages() throws IOException {
+        while (true) {
+            BorderPane borderPane = new BorderPane();
+            Label label = new Label();
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            String[] msg = dataInputStream.readUTF().split("-");
+            if (Objects.equals(msg[0], "other") && Objects.equals(msg[1], "message")) {
+                label.setText(msg[2]);
+                borderPane.setLeft(label);
+                messages.add(borderPane, 0, counter++);
             }
+            else if (Objects.equals(msg[0], "your") && Objects.equals(msg[1], "message")) {
+                label.setText(msg[2]);
+                borderPane.setRight(label);
+                messages.add(borderPane, 0, counter++);
+            }
+            message.setText(" ");
         }
-        messages.add(label, 0, counter++);
-        message.setText("");
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        new Thread("controlMessagesThread") {
+            @Override
+            public void run() {
+                try {
+                    showMessages();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
+
     }
 }
