@@ -88,11 +88,15 @@ public class Database
     public String searchName(String name){
         StringBuilder answer=new StringBuilder("Massages from "+name+":\n");
         try {
-            String query="SELECT mes from messages WHERE ID='"+name+"' ORDER BY num ASC";
+            String queryUsers="SELECT ID from users WHERE name='"+name+"'";
+            Statement sUser=con.prepareStatement(queryUsers);
+            ResultSet users=sUser.executeQuery(queryUsers);
+            while (users.next()){
+            String query="SELECT mes,ID from messages WHERE ID='"+users.getString("ID")+"' ORDER BY num ASC";
             Statement s=con.prepareStatement(query);
             ResultSet rs=s.executeQuery(query);
-            while (rs.next()){
-                answer.append(rs.getString("mes")).append("\n");
+            while (rs.next())
+                answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
             }
         }catch (Exception e){}
         return answer.toString();
@@ -142,4 +146,11 @@ public class Database
         }
         return answer.toString();
     }
+
+//    public String getOnlineUsers(){
+//        StringBuilder
+//        for(ClientHandler client : clients){
+//
+//        }
+//    }
 }

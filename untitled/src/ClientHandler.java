@@ -74,6 +74,9 @@ public class ClientHandler extends Thread{
                         writer.flush();
                     }
                 }
+                else if(massage.compareTo("pv")==0){
+                    ;
+                }
                 else
                 {
                     num=Database.getDatabase().getMaxNum()+1;
