@@ -9,8 +9,11 @@ public class Client {
     private static String ID="jeonharry";
     private static boolean run=true;
     private static long startTime;
+    private static boolean enterPV=true;
+    private static Thread main;
     public static void main(String[] args) throws IOException {
         Client.socket=new Socket("127.0.0.1",1234);
+        main=Thread.currentThread();
         new Thread(){
             public void run()
             {
@@ -24,6 +27,22 @@ public class Client {
                             System.out.println(mess);
                             if(mess.compareTo("connected")==0)
                                 System.out.println("ping: "+(System.currentTimeMillis()-startTime)+"ms");
+                            else if(mess.compareTo("username Not Found Or is offline")==0)
+                            {
+                                enterPV=false;
+                                synchronized (main)
+                                {
+                                    main.notifyAll();
+                                }
+                            }
+                            else if(mess.compareTo("pv started")==0)
+                            {
+                                enterPV=true;
+                                synchronized (main)
+                                {
+                                    main.notifyAll();
+                                }
+                            }
                         }
                     }catch (Exception exception){}
                 }
@@ -70,5 +89,21 @@ public class Client {
 
     public static void setStartTime(long startTime) {
         Client.startTime = startTime;
+    }
+
+    public static boolean isEnterPV() {
+        return enterPV;
+    }
+
+    public static void setEnterPV(boolean enterPV) {
+        Client.enterPV = enterPV;
+    }
+
+    public static Thread getMain() {
+        return main;
+    }
+
+    public static void setMain(Thread main) {
+        Client.main = main;
     }
 }

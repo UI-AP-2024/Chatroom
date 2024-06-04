@@ -36,7 +36,19 @@ public class View
                     break;
                 }
                 else if(input.compareTo("pv")==0)
-                    ;
+                {
+                    writer.println("pv");
+                    writer.flush();
+                    writer.println(sc.nextLine());
+                    writer.flush();
+                    synchronized (Client.getMain())
+                    {
+                        Client.getMain().wait();
+                    }
+                    if(Client.isEnterPV())
+                        pv();
+                    System.out.println("----------------------------------");
+                }
                 else if(input.compareTo("search")==0)
                 {
                     String function=sc.nextLine();
@@ -76,6 +88,21 @@ public class View
         }catch (Exception exception)
         {
             System.out.println("error "+exception.getMessage());
+        }
+    }
+    public void pv()
+    {
+        while (true)
+        {
+            Scanner sc=new Scanner(System.in);
+            String message=sc.nextLine();
+            writer.println(message);
+            writer.flush();
+            if(message.compareTo("finish")==0)
+            {
+                System.out.println("private chat ended");
+                break;
+            }
         }
     }
 }

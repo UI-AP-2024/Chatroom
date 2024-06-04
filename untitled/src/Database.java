@@ -54,8 +54,8 @@ public class Database
         Statement statement=con.prepareStatement(sqlcmd);
         statement.execute(sqlcmd);
     }
-    public int getMaxNum() throws SQLException {
-        String query="SELECT MAX(num) from messages";
+    public int getMaxNum(String tableName) throws SQLException {
+        String query="SELECT MAX(num) from "+tableName;
         Statement s=con.prepareStatement(query);
         ResultSet rs=s.executeQuery(query);
         while (rs.next()){
@@ -122,7 +122,7 @@ public class Database
                 }
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+
         }
         return answer.toString();
     }
@@ -142,15 +142,34 @@ public class Database
                 answer.append(rsMess.getString("mes")).append("\n");
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+
         }
         return answer.toString();
     }
-
-//    public String getOnlineUsers(){
-//        StringBuilder
-//        for(ClientHandler client : clients){
-//
-//        }
-//    }
+    public String getOnlineUsers(String meUserName){
+        StringBuilder answer= new StringBuilder("--------------online users----------------\n");
+        for(ClientHandler client : clients)
+            if(client!=null && client.getID().compareTo(meUserName)!=0)
+                answer.append(client.getID()).append("\n");
+        answer.append("------------------------------------------\n");
+        return answer.toString();
+    }
+    public boolean userNameExist(String ID)
+    {
+        for(ClientHandler client :clients)
+            if(client!=null && client.getID().compareTo(ID)==0)
+                return true;
+        return false;
+    }
+    public void savePVMessages(String senderID,String receiverID,String mess)throws Exception
+    {
+        int num=getMaxNum("pv");
+        try {
+            String message=String.format("INSERT into PV (num,senderID,recieverID,mess) VALUES (%d,'%s','%s','%s')",num+1,senderID,receiverID,mess);
+            Statement s=con.prepareStatement(message);
+            s.execute(message);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 }

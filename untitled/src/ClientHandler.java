@@ -75,11 +75,24 @@ public class ClientHandler extends Thread{
                     }
                 }
                 else if(massage.compareTo("pv")==0){
-                    ;
+                    writer.write(Database.getDatabase().getOnlineUsers(this.ID));
+                    writer.flush();
+                    String ID=bufferedReader.readLine();
+                    if(Database.getDatabase().userNameExist(ID))
+                    {
+                        writer.println("pv started");
+                        writer.flush();
+                        pv(ID);
+                    }
+                    else
+                    {
+                        writer.println("username Not Found Or is offline");
+                        writer.flush();
+                    }
                 }
                 else
                 {
-                    num=Database.getDatabase().getMaxNum()+1;
+                    num=Database.getDatabase().getMaxNum("messages")+1;
                     Database.getDatabase().saveMassage(num,this.ID,massage);
                     for(ClientHandler client: Database.getDatabase().getClients()){
                         if(client!=null && client.getID().compareTo(this.ID)!=0){
@@ -97,7 +110,24 @@ public class ClientHandler extends Thread{
                 Server.getServerSocket().close();
         }
          catch (Exception e) {
-             System.out.println(e.getMessage());
+             System.out.println("err "+e.getMessage());
          }
+    }
+    public void pv(String ID)
+    {
+        try
+        {
+            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            String massage;
+            while ((massage=bufferedReader.readLine())!=null)
+            {
+                if(massage.compareTo("finish")==0)
+                    break;
+                else
+                    Database.getDatabase().savePVMessages(this.ID,ID,massage);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }
