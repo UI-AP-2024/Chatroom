@@ -17,7 +17,7 @@ public class Client implements Runnable{
     public void run() {
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("connected" + name);
+            dataOutputStream.writeUTF(name + " is connected" );
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
