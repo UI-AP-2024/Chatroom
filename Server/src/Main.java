@@ -6,11 +6,13 @@ import java.net.Socket;
 public class Main {
     private static Socket socket;
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(1234);
-        Socket socket = serverSocket.accept();
-        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        Client client = new Client(dataInputStream.readUTF());
-        client.setSocket(socket);
-        client.run();
+        int counter = 1234;
+        while (true) {
+            ServerSocket serverSocket = new ServerSocket(counter++);
+            Socket socket = serverSocket.accept();
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            Client client = new Client(dataInputStream.readUTF(),socket);
+            client.run();
+        }
     }
 }
