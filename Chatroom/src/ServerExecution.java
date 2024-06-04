@@ -3,13 +3,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server {
-    private static ArrayList<String> usernames = new ArrayList<>();
+public class ServerExecution {
+    private static ArrayList<User> users = new ArrayList<User>();
     private static ArrayList<ClientThread> clientsThread = new ArrayList<ClientThread>();
     private static ArrayList<Massage> pvMessages = new ArrayList<>();
 
-    public static ArrayList<String> getUsernames() {
-        return usernames;
+    public static ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public static void setUsers(ArrayList<User> users) {
+        ServerExecution.users = users;
     }
 
     public static ArrayList<ClientThread> getClientsThread() {
@@ -20,16 +24,13 @@ public class Server {
         return pvMessages;
     }
 
-    public static void setUsernames(ArrayList<String> usernames) {
-        Server.usernames = usernames;
-    }
 
     public static void setClientsThread(ArrayList<ClientThread> clientsThread) {
-        Server.clientsThread = clientsThread;
+        ServerExecution.clientsThread = clientsThread;
     }
 
     public static void setPvMessages(ArrayList<Massage> pvMessages) {
-        Server.pvMessages = pvMessages;
+        ServerExecution.pvMessages = pvMessages;
     }
 
     public static void main(String[] args) throws IOException {
