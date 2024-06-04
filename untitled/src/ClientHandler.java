@@ -9,9 +9,14 @@ public class ClientHandler extends Thread{
     private String ID;
     private String name;
     private int num;
+    private PrintWriter writer;
     public ClientHandler(Socket socket) {
         this.socket=socket;
         Database.getDatabase().getClients().add(this);
+        try
+        {
+            writer=new PrintWriter(this.getSocket().getOutputStream());
+        }catch (Exception exception){}
     }
 
     public Socket getSocket() {
@@ -45,19 +50,21 @@ public class ClientHandler extends Thread{
             this.name=bufferedReader.readLine();
             Database.getDatabase().login(name,ID);
             String massage;
+            writer.println("connected");
+            writer.flush();
+            writer.write(Database.getDatabase().showPreviousMessages());
+            writer.flush();
             while ((massage=bufferedReader.readLine())!=null){
                 if(massage.compareTo("exit")==0)
                     break;
                 else if(massage.compareTo("")==0)
                 {
-                    PrintWriter writer=new PrintWriter(this.getSocket().getOutputStream());
                     writer.println("connected");
                     writer.flush();
                 }
                 else if(massage.compareTo("search")==0){
                     String function=bufferedReader.readLine();
                     String[] orders=function.split(" ");
-                    PrintWriter writer=new PrintWriter(this.getSocket().getOutputStream());
                     if(orders.length>1){
                         writer.write(Database.getDatabase().searchTime(orders[0],orders[2]));
                         writer.flush();
@@ -73,7 +80,7 @@ public class ClientHandler extends Thread{
                     Database.getDatabase().saveMassage(num,this.ID,massage);
                     for(ClientHandler client: Database.getDatabase().getClients()){
                         if(client!=null && client.getID().compareTo(this.ID)!=0){
-                            PrintWriter writer=new PrintWriter(client.getSocket().getOutputStream());
+                            writer=new PrintWriter(client.getSocket().getOutputStream());
                             writer.write(this.getUserName()+":\n"+massage+"\n");
                             writer.flush();
                         }
@@ -82,6 +89,9 @@ public class ClientHandler extends Thread{
             }
             Database.getDatabase().getClients().remove(this);
             this.socket.close();
+            writer.close();
+            if(Database.getDatabase().getClients().size()==0)
+                Server.getServerSocket().close();
         }
          catch (Exception e) {
              System.out.println(e.getMessage());

@@ -61,7 +61,7 @@ public class Database
         while (rs.next()){
             return rs.getInt(1);
         }
-        return 0;
+        return -1;
     }
     public void login(String name,String ID)
     {
@@ -88,7 +88,7 @@ public class Database
     public String searchName(String name){
         StringBuilder answer=new StringBuilder("Massages from "+name+":\n");
         try {
-            String query="SELECT mes from messages WHERE ID='"+name+"'";
+            String query="SELECT mes from messages WHERE ID='"+name+"' ORDER BY num ASC";
             Statement s=con.prepareStatement(query);
             ResultSet rs=s.executeQuery(query);
             while (rs.next()){
@@ -102,7 +102,7 @@ public class Database
         LocalTime endTime=LocalTime.parse(time2);
         StringBuilder answer=new StringBuilder("Massages from "+time1+" to "+time2+":\n");
         try {
-            String query="SELECT mes,time,ID from messages";
+            String query="SELECT mes,time,ID from messages ORDER BY num ASC";
             Statement s=con.prepareStatement(query);
             ResultSet rs=s.executeQuery(query);
             while (rs.next()){
@@ -116,6 +116,26 @@ public class Database
                 } else if (time.compareTo(startTime) == 0 && time.compareTo(endTime) == 0) {
                     answer.append(rs.getString("ID")).append(" : ").append(rs.getString("mes")).append("\n");
                 }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return answer.toString();
+    }
+    public String showPreviousMessages()
+    {
+        StringBuilder answer=new StringBuilder();
+        try {
+            String queryMess="SELECT ID,mes from messages ORDER BY num ASC";
+            Statement s=con.prepareStatement(queryMess);
+            ResultSet rsMess=s.executeQuery(queryMess);
+            while (rsMess.next()){
+                String queryUsers="SELECT name,ID from users WHERE users.ID='"+rsMess.getString("ID")+"'";
+                Statement sUser=con.prepareStatement(queryUsers);
+                ResultSet user=sUser.executeQuery(queryUsers);
+                if(user.next())
+                    answer.append(user.getString("name")).append(" :\n");
+                answer.append(rsMess.getString("mes")).append("\n");
             }
         }catch (Exception e){
             System.out.println(e.getMessage());

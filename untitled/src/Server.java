@@ -3,6 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    private static ServerSocket serverSocket;
     public static void main(String[] args)throws Exception {
         try {
             Database.getDatabase().makeConnection();
@@ -10,7 +11,7 @@ public class Server {
             System.out.println(e.getMessage());
         }
         try {
-            ServerSocket serverSocket=new ServerSocket(1234);
+            serverSocket=new ServerSocket(1234);
             while (true){
                 Socket socket=serverSocket.accept();
                 ClientHandler clientHandler=new ClientHandler(socket);
@@ -19,8 +20,17 @@ public class Server {
                     break;
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            if(!serverSocket.isClosed())
+                System.out.println(e.getMessage());
         }
         Database.getDatabase().finish();
+    }
+
+    public static ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public static void setServerSocket(ServerSocket serverSocket) {
+        Server.serverSocket = serverSocket;
     }
 }

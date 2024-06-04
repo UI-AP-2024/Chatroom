@@ -13,14 +13,17 @@ public class View
             view=new View();
         return view;
     }
+    private PrintWriter writer;
     public void start()
     {
-        try(PrintWriter writer=new PrintWriter(Client.getSocket().getOutputStream());)
+        try
         {
+            writer=new PrintWriter(Client.getSocket().getOutputStream());
             Scanner sc=new Scanner(System.in);
             writer.println(Client.getID());
             writer.println(Client.getName());
             writer.flush();
+            Client.setStartTime(System.currentTimeMillis());
             while (true)
             {
                 String input=sc.nextLine();
