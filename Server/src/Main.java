@@ -12,7 +12,8 @@ public class Main {
             Socket socket = serverSocket.accept();
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             Client client = new Client(dataInputStream.readUTF(),socket);
-            client.run();
+            Thread thread = new Thread(client);
+            thread.start();
         }
     }
 }
