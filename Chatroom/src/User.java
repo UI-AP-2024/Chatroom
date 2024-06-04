@@ -1,6 +1,35 @@
+import java.util.ArrayList;
+
 public class User {
     private String username;
     private String ID;
+    private ArrayList<Massage> unSeenMessages=new ArrayList<Massage>();
+    private boolean online=true;
+    private boolean pvChat=false;
+
+    public void setUnSeenMessages(ArrayList<Massage> unSeenMessages) {
+        this.unSeenMessages = unSeenMessages;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public void setPvChat(boolean pvChat) {
+        this.pvChat = pvChat;
+    }
+
+    public ArrayList<Massage> getUnSeenMessages() {
+        return unSeenMessages;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public boolean isPvChat() {
+        return pvChat;
+    }
 
     public String getUsername() {
         return username;
