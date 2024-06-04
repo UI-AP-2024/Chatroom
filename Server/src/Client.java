@@ -32,6 +32,7 @@ public class Client implements Runnable{
                 recognizeCommand((new DataInputStream(socket.getInputStream())).readUTF());
             } catch (IOException e) {
                 System.out.println(e.getMessage());
+                break;
             }
         }
     }
@@ -47,8 +48,13 @@ public class Client implements Runnable{
 
     public void showMessage(String string) throws IOException {
         for (Socket socket : sockets){
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("show message-"+string);
+            if ( socket != this.socket) {
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF("other-message-" + string);
+            }else{
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF("your-message-" + string);
+            }
         }
     }
 

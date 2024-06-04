@@ -44,7 +44,7 @@ public class ChatroomView implements Initializable {
         showMessages();
     }
     public void showMessages() throws IOException {
-        while (true) {
+        while (socket.isConnected()) {
             BorderPane borderPane = new BorderPane();
             Label label = new Label();
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
@@ -74,6 +74,5 @@ public class ChatroomView implements Initializable {
                 }
             }
         }.start();
-
     }
 }
