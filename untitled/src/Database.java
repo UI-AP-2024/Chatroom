@@ -169,7 +169,81 @@ public class Database
             Statement s=con.prepareStatement(message);
             s.execute(message);
         }catch (Exception e){
-            System.out.println(e.getMessage());
+
+        }
+    }
+
+    public String showPreviousMessages(ClientHandler caller,String senderID,String receiverID){
+        StringBuilder answer=new StringBuilder();
+        try {
+            String queryMess="SELECT senderID,recieverID,mess,num from pv ORDER BY num ASC";
+            Statement s=con.prepareStatement(queryMess);
+            ResultSet rsMess=s.executeQuery(queryMess);
+            while (rsMess.next()){
+                if(rsMess.getString("senderID").compareTo(senderID)==0 && rsMess.getString("recieverID").compareTo(receiverID)==0)
+                {
+                    answer.append("You: ");
+                    answer.append(rsMess.getString("mess")).append("\n");
+                    caller.setLastSeenNum(rsMess.getInt("num"));
+                }
+                else if(rsMess.getString("senderID").compareTo(receiverID)==0 && rsMess.getString("recieverID").compareTo(senderID)==0){
+                    String queryUsers="SELECT name from users WHERE users.ID='"+rsMess.getString("senderID")+"'";
+                    Statement sUser=con.prepareStatement(queryUsers);
+                    ResultSet user=sUser.executeQuery(queryUsers);
+                    if(user.next())
+                        answer.append(user.getString("name")).append(" : ");
+                    answer.append(rsMess.getString("mess")).append("\n");
+                    caller.setLastSeenNum(rsMess.getInt("num"));
+                }
+            }
+        }catch (Exception e){
+
+        }
+        return answer.toString();
+    }
+    public String showCurrentMessage(ClientHandler caller,String senderID,String receiverID){
+        StringBuilder answer=new StringBuilder();
+        try {
+            String queryMess="SELECT senderID,recieverID,mess,num from pv WHERE num>"+caller.getLastSeenNum()+" ORDER BY num ASC";
+            Statement s=con.prepareStatement(queryMess);
+            ResultSet rsMess=s.executeQuery(queryMess);
+            while (rsMess.next()){
+                if(rsMess.getString("senderID").compareTo(receiverID)==0 && rsMess.getString("recieverID").compareTo(senderID)==0){
+                    String queryUsers="SELECT name from users WHERE users.ID='"+rsMess.getString("senderID")+"'";
+                    Statement sUser=con.prepareStatement(queryUsers);
+                    ResultSet user=sUser.executeQuery(queryUsers);
+                    if(user.next())
+                        answer.append(user.getString("name")).append(" : ");
+                    answer.append(rsMess.getString("mess")).append("\n");
+                    caller.setLastSeenNum(rsMess.getInt("num"));
+                }
+            }
+        }catch (Exception e){
+
+        }
+        return answer.toString();
+    }
+    public void clearHistory(ClientHandler caller,String senderID,String receiverID){
+        try {
+            String queryMess="SELECT senderID,recieverID,mess,num from pv ORDER BY num ASC";
+            Statement s=con.prepareStatement(queryMess);
+            ResultSet rsMess=s.executeQuery(queryMess);
+            while (rsMess.next()){
+                if(rsMess.getString("senderID").compareTo(senderID)==0 && rsMess.getString("recieverID").compareTo(receiverID)==0)
+                {
+                    String cmd=String.format("DELETE from pv WHERE senderID='%s' AND recieverID='%s'",senderID,receiverID);
+                    Statement statement=con.prepareStatement(cmd);
+                    statement.execute(cmd);
+                }
+                else if(rsMess.getString("senderID").compareTo(receiverID)==0 && rsMess.getString("recieverID").compareTo(senderID)==0){
+                    String cmd=String.format("DELETE from pv WHERE senderID='%s' AND recieverID='%s'",receiverID,senderID);
+                    Statement statement=con.prepareStatement(cmd);
+                    statement.execute(cmd);
+                }
+            }
+            caller.setLastSeenNum(0);
+        }catch (Exception e){
+            System.out.println("error dad "+e.getMessage());
         }
     }
 }

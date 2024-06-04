@@ -9,7 +9,9 @@ public class ClientHandler extends Thread{
     private String ID;
     private String name;
     private int num;
+    private int lastSeenNum;
     private PrintWriter writer;
+    private boolean pvEnd=true;
     public ClientHandler(Socket socket) {
         this.socket=socket;
         Database.getDatabase().getClients().add(this);
@@ -41,6 +43,14 @@ public class ClientHandler extends Thread{
 
     public void setUserName(String name) {
         this.name = name;
+    }
+
+    public int getLastSeenNum() {
+        return lastSeenNum;
+    }
+
+    public void setLastSeenNum(int lastSeenNum) {
+        this.lastSeenNum = lastSeenNum;
     }
 
     @Override
@@ -82,6 +92,14 @@ public class ClientHandler extends Thread{
                     {
                         writer.println("pv started");
                         writer.flush();
+                        writer.write(Database.getDatabase().showPreviousMessages(this,this.ID,ID));
+                        writer.flush();
+                        new Thread(){
+                            public void run()
+                            {
+                                readingCurrentMessages(ID);
+                            }
+                        }.start();
                         pv(ID);
                     }
                     else
@@ -122,12 +140,30 @@ public class ClientHandler extends Thread{
             while ((massage=bufferedReader.readLine())!=null)
             {
                 if(massage.compareTo("finish")==0)
+                {
+                    pvEnd=false;
                     break;
+                }
+                else if(massage.compareTo("clear history")==0)
+                {
+                    writer.println("History Cleaned!");
+                    Database.getDatabase().clearHistory(this,this.ID,ID);
+                }
                 else
                     Database.getDatabase().savePVMessages(this.ID,ID,massage);
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
+        }
+    }
+    public void readingCurrentMessages(String ID)
+    {
+        while (true)
+        {
+            writer.write(Database.getDatabase().showCurrentMessage(this,this.ID,ID));
+            writer.flush();
+            if(!pvEnd)
+                break;
         }
     }
 }
