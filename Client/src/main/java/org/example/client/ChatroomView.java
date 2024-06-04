@@ -1,5 +1,6 @@
 package org.example.client;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
@@ -13,9 +14,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.sql.Statement;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 public class ChatroomView implements Initializable {
+    public static Socket socket;
 
     @FXML
     private TextField message;
@@ -33,11 +36,9 @@ public class ChatroomView implements Initializable {
 
     @FXML
     void sendButtonAction(ActionEvent event) throws IOException {
-        Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-
         dataOutputStream.writeUTF("send message" + message.getText());
+        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
         String[] input = dataInputStream.readUTF().split("-");
         Label label = new Label();
         switch (input[0]) {

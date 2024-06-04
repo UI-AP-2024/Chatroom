@@ -2,7 +2,9 @@ package org.example.client;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -29,7 +31,8 @@ public class MainPageView implements Initializable {
         dataOutputStream.writeUTF(messageField.getText());
         String s = dataInputStream.readUTF();
         System.out.println(s);
-        messageField.setText(s);
+        ChatroomView.socket = socket;
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml")).load()));
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

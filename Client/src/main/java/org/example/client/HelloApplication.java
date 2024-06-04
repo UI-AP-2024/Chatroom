@@ -10,9 +10,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class HelloApplication extends Application {
+    public static Stage myStage ;
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml"));
+        myStage = stage;
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-page-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Hello!");
         stage.setScene(scene);
