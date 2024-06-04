@@ -68,72 +68,79 @@ public class ClientHandler extends Thread{
         try(BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(this.socket.getInputStream()));){
             this.ID=bufferedReader.readLine();
             this.name=bufferedReader.readLine();
-            Database.getDatabase().login(name,ID);
-            String massage;
-            writer.println("connected");
-            writer.flush();
-            writer.write(Database.getDatabase().showPreviousMessages());
-            writer.flush();
-            while ((massage=bufferedReader.readLine())!=null){
-                if(massage.compareTo("exit")==0)
-                    break;
-                else if(massage.compareTo("")==0)
-                {
-                    writer.println("connected");
-                    writer.flush();
-                }
-                else if(massage.compareTo("search")==0){
-                    String function=bufferedReader.readLine();
-                    String[] orders=function.split(" ");
-                    if(orders.length>1){
-                        writer.write(Database.getDatabase().searchTime(orders[0],orders[2]));
-                        writer.flush();
-                    }
-                    else{
-                        writer.write(Database.getDatabase().searchName(function));
-                        writer.flush();
-                    }
-                }
-                else if(massage.compareTo("pv")==0){
-                    writer.write(Database.getDatabase().getOnlineUsers(this.ID));
-                    writer.flush();
-                    String ID=bufferedReader.readLine();
-                    if(Database.getDatabase().userNameExist(ID))
+            if(Database.getDatabase().login(name,ID))
+            {
+                String massage;
+                writer.println("connected");
+                writer.flush();
+                writer.write(Database.getDatabase().showPreviousMessages());
+                writer.flush();
+                while ((massage=bufferedReader.readLine())!=null){
+                    if(massage.compareTo("exit")==0)
+                        break;
+                    else if(massage.compareTo("")==0)
                     {
-                        lastTimeInChatroom=LocalTime.now();
-                        writer.println("pv started");
-                        writer.flush();
-                        writer.write(Database.getDatabase().showPreviousPVMessages(this,this.ID,ID));
-                        writer.flush();
-                        pvEnd=true;
-                        new Thread(){
-                            public void run()
-                            {
-                                readingCurrentMessages(ID);
-                            }
-                        }.start();
-                        pv(ID);
-                        writer.write(Database.getDatabase().unseenMessChatroom(this));
+                        writer.println("connected");
                         writer.flush();
                     }
-                    else
-                    {
-                        writer.println("username Not Found Or is offline");
-                        writer.flush();
-                    }
-                }
-                else
-                {
-                    num=Database.getDatabase().getMaxNum("messages")+1;
-                    Database.getDatabase().saveMassage(num,this.ID,massage);
-                    for(ClientHandler client: Database.getDatabase().getClients()){
-                        if(client!=null && client.getID().compareTo(this.ID)!=0 && !client.pvEnd){
-                            writer=new PrintWriter(client.getSocket().getOutputStream());
-                            writer.write(this.getUserName()+":\n"+massage+"\n");
+                    else if(massage.compareTo("search")==0){
+                        String function=bufferedReader.readLine();
+                        String[] orders=function.split(" ");
+                        if(orders.length>1){
+                            writer.write(Database.getDatabase().searchTime(orders[0],orders[2]));
+                            writer.flush();
+                        }
+                        else{
+                            writer.write(Database.getDatabase().searchName(function));
                             writer.flush();
                         }
                     }
+                    else if(massage.compareTo("pv")==0){
+                        writer.write(Database.getDatabase().getOnlineUsers(this.ID));
+                        writer.flush();
+                        String ID=bufferedReader.readLine();
+                        if(Database.getDatabase().userNameExist(ID))
+                        {
+                            lastTimeInChatroom=LocalTime.now();
+                            writer.println("pv started");
+                            writer.flush();
+                            writer.write(Database.getDatabase().showPreviousPVMessages(this,this.ID,ID));
+                            writer.flush();
+                            pvEnd=true;
+                            new Thread(){
+                                public void run()
+                                {
+                                    readingCurrentMessages(ID);
+                                }
+                            }.start();
+                            pv(ID);
+                            writer.write(Database.getDatabase().unseenMessChatroom(this));
+                            writer.flush();
+                        }
+                        else
+                        {
+                            writer.println("username Not Found Or is offline");
+                            writer.flush();
+                        }
+                    }
+                    else
+                    {
+                        num=Database.getDatabase().getMaxNum("messages")+1;
+                        Database.getDatabase().saveMassage(num,this.ID,massage);
+                        for(ClientHandler client: Database.getDatabase().getClients()){
+                            if(client!=null && client.getID().compareTo(this.ID)!=0 && !client.pvEnd){
+                                writer=new PrintWriter(client.getSocket().getOutputStream());
+                                writer.write(this.getUserName()+":\n"+massage+"\n");
+                                writer.flush();
+                            }
+                        }
+                    }
                 }
+            }
+            else
+            {
+                writer.println("Wrong Information");
+                writer.flush();
             }
             Database.getDatabase().getClients().remove(this);
             this.socket.close();

@@ -51,26 +51,40 @@ public class Database
         }
         return -1;
     }
-    public void login(String name,String ID)
+    public boolean login(String name,String ID)
     {
         try{
-            String query="SELECT ID From users";
+            String query="SELECT ID,name From users";
             Statement statement=con.prepareStatement(query);
             ResultSet rs=statement.executeQuery(query);
             boolean exist=false;
+            boolean rightName=true;
             while (rs.next())
             {
                 if(rs.getString("ID").compareTo(ID)==0)
+                {
+                    if(rs.getString("name").compareTo(name)!=0)
+                        rightName=false;
                     exist=true;
+                }
             }
-            if(!exist)
+            if(exist)
+            {
+                if(rightName)
+                    return true;
+                else
+                    return false;
+            }
+            else
             {
                 String cmd=String.format("INSERT INTO users (name,ID) VALUES ('%s','%s')",name,ID);
                 statement=con.prepareStatement(cmd);
                 statement.execute(cmd);
+                return true;
             }
         }catch (Exception exception){
-
+            System.out.println(exception.getMessage());
+            return false;
         }
     }
     public String searchName(String name){

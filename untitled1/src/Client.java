@@ -5,11 +5,12 @@ import java.net.Socket;
 
 public class Client {
     private static Socket socket;
-    private static String name="harry";
-    private static String ID="jeonharry";
+    private static String name;
+    private static String ID;
     private static boolean run=true;
     private static long startTime;
     private static boolean enterPV=true;
+    private static boolean rightInfo=true;
     private static Thread main;
     public static void main(String[] args) throws IOException {
         Client.socket=new Socket("127.0.0.1",1234);
@@ -26,7 +27,22 @@ public class Client {
                         {
                             System.out.println(mess);
                             if(mess.compareTo("connected")==0)
+                            {
                                 System.out.println("ping: "+(System.currentTimeMillis()-startTime)+"ms");
+                                rightInfo=true;
+                                synchronized (main)
+                                {
+                                    main.notifyAll();
+                                }
+                            }
+                            else if(mess.compareTo("Wrong Information")==0)
+                            {
+                                rightInfo=false;
+                                synchronized (main)
+                                {
+                                    main.notifyAll();
+                                }
+                            }
                             else if(mess.compareTo("username Not Found Or is offline")==0)
                             {
                                 enterPV=false;
@@ -105,5 +121,13 @@ public class Client {
 
     public static void setMain(Thread main) {
         Client.main = main;
+    }
+
+    public static boolean isRightInfo() {
+        return rightInfo;
+    }
+
+    public static void setRightInfo(boolean rightInfo) {
+        Client.rightInfo = rightInfo;
     }
 }

@@ -20,10 +20,21 @@ public class View
         {
             writer=new PrintWriter(Client.getSocket().getOutputStream());
             Scanner sc=new Scanner(System.in);
-            writer.println(Client.getID());
-            writer.println(Client.getName());
-            writer.flush();
             Client.setStartTime(System.currentTimeMillis());
+            while (true)
+            {
+                Client.setID(sc.nextLine());
+                writer.println(Client.getID());
+                Client.setName(sc.nextLine());
+                writer.println(Client.getName());
+                writer.flush();
+                synchronized (Client.getMain())
+                {
+                    Client.getMain().wait();
+                }
+                if(Client.isRightInfo())
+                    break;
+            }
             while (true)
             {
                 String input=sc.nextLine();
