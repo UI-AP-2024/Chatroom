@@ -83,7 +83,7 @@ public class Database
                 return true;
             }
         }catch (Exception exception){
-            System.out.println(exception.getMessage());
+
             return false;
         }
     }
@@ -269,7 +269,7 @@ public class Database
                 }
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+
         }
         return answer.toString();
     }

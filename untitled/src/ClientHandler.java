@@ -149,11 +149,10 @@ public class ClientHandler extends Thread{
                 Server.getServerSocket().close();
         }
          catch (Exception e) {
-             System.out.println("err "+e.getMessage());
+//             System.out.println("err "+e.getMessage());
          }
     }
-    public void pv(String ID)
-    {
+    public void pv(String ID) throws Exception {
         try
         {
             BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -174,7 +173,7 @@ public class ClientHandler extends Thread{
                     Database.getDatabase().savePVMessages(this.ID,ID,massage);
             }
         }catch (Exception e){
-            System.out.println(e.getMessage());
+         throw e;
         }
     }
     public void readingCurrentMessages(String ID)
