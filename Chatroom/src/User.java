@@ -51,4 +51,7 @@ public class User {
         this.username = username;
         this.ID = ID;
     }
+    public void addUnSeenMessage(Massage massage){
+        unSeenMessages.add(massage);
+    }
 }

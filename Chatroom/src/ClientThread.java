@@ -1,46 +1,58 @@
 import java.io.*;
 import java.net.Socket;
 
-public class ClientThread extends Thread{
+public class ClientThread extends Thread {
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
     private ClientThread thread;
-    public ClientThread(Socket socket) {
+    private User user;
+
+    public ClientThread(Socket socket, User user) {
         this.socket = socket;
-        this.thread=this;
+        this.user = user;
+        this.thread = this;
+    }
+
+    public void setReader(BufferedReader reader) {
+        this.reader = reader;
+    }
+
+    public void setWriter(PrintWriter writer) {
+        this.writer = writer;
+    }
+
+    public BufferedReader getReader() {
+        return reader;
+    }
+
+    public PrintWriter getWriter() {
+        return writer;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
 
-    public void setIn(BufferedReader reader) {
-        this.reader = reader;
-    }
-
-    public void setOut(PrintWriter out) {
-        this.writer = out;
-    }
-
-    public void setThread(ClientThread thread) {
-        this.thread = thread;
-    }
 
     public Socket getSocket() {
         return socket;
     }
 
-    public BufferedReader getIn() {
-        return reader;
-    }
-
-    public PrintWriter getOut() {
-        return writer;
-    }
-
     public ClientThread getThread() {
         return thread;
+    }
+
+    public void setThread(ClientThread thread) {
+        this.thread = thread;
     }
 
     @Override
@@ -50,8 +62,16 @@ public class ClientThread extends Thread{
             reader = new BufferedReader(new InputStreamReader(input));
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        ServerExecution.chatRoom(new Massage((user.getUsername()+" has joined the chat"),"Server","Chatroom",MassageType.PUBLIC),user);
+
     }
+
+    public void sendMessage(Massage message) {
+        writer.println(message.getText());
+    }
+
+
 }
