@@ -39,40 +39,72 @@ public class ChatroomView implements Initializable {
     static int counter = 0;
     @FXML
     public void sendButtonAction(ActionEvent event) throws IOException {
+//        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+//        dataOutputStream.writeUTF("send message-" + message.getText());
+//        showMessages();
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("send message-" + message.getText());
-        showMessages();
+        message.clear();
     }
     public void showMessages() throws IOException {
+//        while (socket.isConnected()) {
+//            BorderPane borderPane = new BorderPane();
+//            Label label = new Label();
+//            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+//            String[] msg = dataInputStream.readUTF().split("-");
+//            if (Objects.equals(msg[0], "other") && Objects.equals(msg[1], "message")) {
+//                label.setText(msg[2]);
+//                borderPane.setLeft(label);
+//                messages.add(borderPane, 0, counter++);
+//            }
+//            else if (Objects.equals(msg[0], "your") && Objects.equals(msg[1], "message")) {
+//                label.setText(msg[2]);
+//                borderPane.setRight(label);
+//                messages.add(borderPane, 0, counter++);
+//            }
+//            message.setText(" ");
+//        }
+        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
         while (socket.isConnected()) {
-            BorderPane borderPane = new BorderPane();
-            Label label = new Label();
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            String[] msg = dataInputStream.readUTF().split("-");
-            if (Objects.equals(msg[0], "other") && Objects.equals(msg[1], "message")) {
-                label.setText(msg[2]);
-                borderPane.setLeft(label);
-                messages.add(borderPane, 0, counter++);
+            try {
+                String[] msg = dataInputStream.readUTF().split("-");
+                Platform.runLater(() -> {
+                    BorderPane borderPane = new BorderPane();
+                    Label label = new Label();
+                    if (Objects.equals(msg[0], "other") && Objects.equals(msg[1], "message")) {
+                        label.setText(msg[2]);
+                        borderPane.setLeft(label);
+                        messages.add(borderPane, 0, counter++);
+                    } else if (Objects.equals(msg[0], "your") && Objects.equals(msg[1], "message")) {
+                        label.setText(msg[2]);
+                        borderPane.setRight(label);
+                        messages.add(borderPane, 0, counter++);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
             }
-            else if (Objects.equals(msg[0], "your") && Objects.equals(msg[1], "message")) {
-                label.setText(msg[2]);
-                borderPane.setRight(label);
-                messages.add(borderPane, 0, counter++);
-            }
-            message.setText(" ");
         }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        new Thread("controlMessagesThread") {
-            @Override
-            public void run() {
-                try {
-                    showMessages();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+//        new Thread("controlMessagesThread") {
+//            @Override
+//            public void run() {
+//                try {
+//                    showMessages();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }.start();
+        new Thread(() -> {
+            try {
+                showMessages();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }.start();
+        }, "controlMessagesThread").start();
     }
 }
