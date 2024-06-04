@@ -37,19 +37,7 @@ public class Database
     public void saveMassage(int num,String id,String message)throws Exception
     {
         LocalTime time=LocalTime.now();
-        String hour;
-        String minute;
-        String second;
-        if(time.getHour() >=0 && time.getHour()<=9)
-            hour="0"+time.getHour();
-        else hour=String.valueOf(time.getHour());
-        if(time.getMinute() >=0 && time.getMinute()<=9)
-            minute="0"+time.getMinute();
-        else minute=String.valueOf(time.getMinute());
-        if(time.getSecond() >=0 && time.getSecond()<=9)
-            second="0"+time.getSecond();
-        else second=String.valueOf(time.getSecond());
-        String temp=hour+":"+minute+":"+second;
+        String temp=getTimeString(time);
         String sqlcmd=String.format("INSERT INTO messages (ID,mes,num,time) VALUES ('%s' ,'%s',%d,'%s')",id,message,num,temp);
         Statement statement=con.prepareStatement(sqlcmd);
         statement.execute(sqlcmd);
@@ -173,7 +161,7 @@ public class Database
         }
     }
 
-    public String showPreviousMessages(ClientHandler caller,String senderID,String receiverID){
+    public String showPreviousPVMessages(ClientHandler caller,String senderID,String receiverID){
         StringBuilder answer=new StringBuilder();
         try {
             String queryMess="SELECT senderID,recieverID,mess,num from pv ORDER BY num ASC";
@@ -243,7 +231,48 @@ public class Database
             }
             caller.setLastSeenNum(0);
         }catch (Exception e){
-            System.out.println("error dad "+e.getMessage());
+
         }
+    }
+
+    public String unseenMessChatroom(ClientHandler caller)
+    {
+        StringBuilder answer=new StringBuilder();
+        try {
+            String queryMess="SELECT ID,mes,time from messages ORDER BY num ASC";
+            Statement s=con.prepareStatement(queryMess);
+            ResultSet rsMess=s.executeQuery(queryMess);
+            while (rsMess.next()){
+                LocalTime tempTime=LocalTime.parse(rsMess.getString("time"));
+                if(tempTime.isAfter(caller.getLastTimeInChatroom()))
+                {
+                    String queryUsers="SELECT name,ID from users WHERE users.ID='"+rsMess.getString("ID")+"'";
+                    Statement sUser=con.prepareStatement(queryUsers);
+                    ResultSet user=sUser.executeQuery(queryUsers);
+                    if(user.next())
+                        answer.append(user.getString("name")).append(" :\n");
+                    answer.append(rsMess.getString("mes")).append("\n");
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return answer.toString();
+    }
+    public String getTimeString(LocalTime time){
+        String hour;
+        String minute;
+        String second;
+        if(time.getHour() >=0 && time.getHour()<=9)
+            hour="0"+time.getHour();
+        else hour=String.valueOf(time.getHour());
+        if(time.getMinute() >=0 && time.getMinute()<=9)
+            minute="0"+time.getMinute();
+        else minute=String.valueOf(time.getMinute());
+        if(time.getSecond() >=0 && time.getSecond()<=9)
+            second="0"+time.getSecond();
+        else second=String.valueOf(time.getSecond());
+        String temp=hour+":"+minute+":"+second;
+        return temp;
     }
 }

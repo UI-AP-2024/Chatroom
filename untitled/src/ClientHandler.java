@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.LocalTime;
 
 public class ClientHandler extends Thread{
     private Socket socket;
@@ -11,7 +12,8 @@ public class ClientHandler extends Thread{
     private int num;
     private int lastSeenNum;
     private PrintWriter writer;
-    private boolean pvEnd=true;
+    private boolean pvEnd=false;
+    private LocalTime lastTimeInChatroom=null;
     public ClientHandler(Socket socket) {
         this.socket=socket;
         Database.getDatabase().getClients().add(this);
@@ -53,6 +55,14 @@ public class ClientHandler extends Thread{
         this.lastSeenNum = lastSeenNum;
     }
 
+    public LocalTime getLastTimeInChatroom() {
+        return lastTimeInChatroom;
+    }
+
+    public void setLastTimeInChatroom(LocalTime lastTimeInChatroom) {
+        this.lastTimeInChatroom = lastTimeInChatroom;
+    }
+
     @Override
     public void run(){
         try(BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(this.socket.getInputStream()));){
@@ -90,10 +100,12 @@ public class ClientHandler extends Thread{
                     String ID=bufferedReader.readLine();
                     if(Database.getDatabase().userNameExist(ID))
                     {
+                        lastTimeInChatroom=LocalTime.now();
                         writer.println("pv started");
                         writer.flush();
-                        writer.write(Database.getDatabase().showPreviousMessages(this,this.ID,ID));
+                        writer.write(Database.getDatabase().showPreviousPVMessages(this,this.ID,ID));
                         writer.flush();
+                        pvEnd=true;
                         new Thread(){
                             public void run()
                             {
@@ -101,6 +113,8 @@ public class ClientHandler extends Thread{
                             }
                         }.start();
                         pv(ID);
+                        writer.write(Database.getDatabase().unseenMessChatroom(this));
+                        writer.flush();
                     }
                     else
                     {
@@ -113,7 +127,7 @@ public class ClientHandler extends Thread{
                     num=Database.getDatabase().getMaxNum("messages")+1;
                     Database.getDatabase().saveMassage(num,this.ID,massage);
                     for(ClientHandler client: Database.getDatabase().getClients()){
-                        if(client!=null && client.getID().compareTo(this.ID)!=0){
+                        if(client!=null && client.getID().compareTo(this.ID)!=0 && !client.pvEnd){
                             writer=new PrintWriter(client.getSocket().getOutputStream());
                             writer.write(this.getUserName()+":\n"+massage+"\n");
                             writer.flush();
