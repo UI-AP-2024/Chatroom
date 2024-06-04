@@ -64,7 +64,7 @@ public class Client {
                 }
             }
         }.start();
-        View.getView().start();
+        ClientView.getView().start();
     }
 
     public static Socket getSocket() {

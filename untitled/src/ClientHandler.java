@@ -66,10 +66,15 @@ public class ClientHandler extends Thread{
     @Override
     public void run(){
         try(BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(this.socket.getInputStream()));){
-            this.ID=bufferedReader.readLine();
-            this.name=bufferedReader.readLine();
-            if(Database.getDatabase().login(name,ID))
-            {
+            do {
+                this.ID = bufferedReader.readLine();
+                this.name = bufferedReader.readLine();
+                if(!Database.getDatabase().login(name,ID))
+                {
+                    writer.println("Wrong Information");
+                    writer.flush();
+                }
+            }while (!Database.getDatabase().login(name,ID));
                 String massage;
                 writer.println("connected");
                 writer.flush();
@@ -136,12 +141,6 @@ public class ClientHandler extends Thread{
                         }
                     }
                 }
-            }
-            else
-            {
-                writer.println("Wrong Information");
-                writer.flush();
-            }
             Database.getDatabase().getClients().remove(this);
             this.socket.close();
             writer.close();

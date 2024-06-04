@@ -3,15 +3,15 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class View
+public class ClientView
 {
-    private static View view;
-    private View(){}
+    private static ClientView clientView;
+    private ClientView(){}
 
-    public static View getView() {
-        if(view==null)
-            view=new View();
-        return view;
+    public static ClientView getView() {
+        if(clientView ==null)
+            clientView =new ClientView();
+        return clientView;
     }
     private PrintWriter writer;
     public void start()
@@ -20,10 +20,21 @@ public class View
         {
             writer=new PrintWriter(Client.getSocket().getOutputStream());
             Scanner sc=new Scanner(System.in);
-            writer.println(Client.getID());
-            writer.println(Client.getName());
-            writer.flush();
             Client.setStartTime(System.currentTimeMillis());
+            while (true)
+            {
+                Client.setID(sc.nextLine());
+                writer.println(Client.getID());
+                Client.setName(sc.nextLine());
+                writer.println(Client.getName());
+                writer.flush();
+                synchronized (Client.getMain())
+                {
+                    Client.getMain().wait();
+                }
+                if(Client.isRightInfo())
+                    break;
+            }
             while (true)
             {
                 String input=sc.nextLine();
