@@ -140,7 +140,7 @@ public class Database
                 Statement sUser=con.prepareStatement(queryUsers);
                 ResultSet user=sUser.executeQuery(queryUsers);
                 if(user.next())
-                    answer.append(user.getString("name")).append(" :\n");
+                    answer.append(user.getString("name")).append(" : ");
                 answer.append(rsMess.getString("mes")).append("\n");
             }
         }catch (Exception e){
@@ -184,7 +184,7 @@ public class Database
             while (rsMess.next()){
                 if(rsMess.getString("senderID").compareTo(senderID)==0 && rsMess.getString("recieverID").compareTo(receiverID)==0)
                 {
-                    answer.append("You: ");
+                    answer.append("You : ");
                     answer.append(rsMess.getString("mess")).append("\n");
                     caller.setLastSeenNum(rsMess.getInt("num"));
                 }
@@ -264,7 +264,7 @@ public class Database
                     Statement sUser=con.prepareStatement(queryUsers);
                     ResultSet user=sUser.executeQuery(queryUsers);
                     if(user.next())
-                        answer.append(user.getString("name")).append(" :\n");
+                        answer.append(user.getString("name")).append(" : ");
                     answer.append(rsMess.getString("mes")).append("\n");
                 }
             }

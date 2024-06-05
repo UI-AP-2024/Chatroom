@@ -135,6 +135,25 @@ public class ClientHandler extends Thread{
                             writer.flush();
                         }
                     }
+                    else if(massage.compareTo("whisper")==0){
+                        writer.write(Database.getDatabase().getOnlineUsers(this.ID));
+                        writer.flush();
+                        String ID=bufferedReader.readLine();
+                        String whisperMessage=bufferedReader.readLine();
+                        for (ClientHandler client : Database.getDatabase().getClients()){
+                            if(client!=null && client.getID().compareTo(ID)==0){
+                                writer=new PrintWriter(client.getSocket().getOutputStream());
+                                writer.println("whisper from "+this.getUserName()+" : "+whisperMessage);
+                                writer.flush();
+                            }
+                            else if(client!=null && client.getID().compareTo(this.ID)!=0){
+                                writer=new PrintWriter(client.getSocket().getOutputStream());
+                                writer.println(this.getUserName()+" : *****");
+                                writer.flush();
+                            }
+                        }
+                        writer=new PrintWriter(this.getSocket().getOutputStream());
+                    }
                     else if(massage.compareTo("block")==0){
                         writer.write(Database.getDatabase().showAllUsers());
                         writer.flush();
@@ -148,10 +167,11 @@ public class ClientHandler extends Thread{
                         for(ClientHandler client: Database.getDatabase().getClients()){
                             if(client!=null && client.getID().compareTo(this.ID)!=0 && !client.pvEnd){
                                 writer=new PrintWriter(client.getSocket().getOutputStream());
-                                writer.write(this.getUserName()+":\n"+massage+"\n");
+                                writer.write(this.getUserName()+" : "+massage+"\n");
                                 writer.flush();
                             }
                         }
+                        writer=new PrintWriter(this.getSocket().getOutputStream());
                     }
                 }
             Database.getDatabase().getClients().remove(this);

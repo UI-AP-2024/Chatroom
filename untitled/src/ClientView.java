@@ -62,6 +62,14 @@ public class ClientView
                         pv();
                     System.out.println("------------------------------------------");
                 }
+                else if(input.compareTo("whisper")==0){
+                    writer.println("whisper");
+                    writer.flush();
+                    writer.println(sc.nextLine());
+                    writer.flush();
+                    writer.println(sc.nextLine());
+                    writer.flush();
+                }
                 else if (input.compareTo("block") == 0)
                 {
                     writer.println("block");
