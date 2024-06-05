@@ -34,7 +34,7 @@ public class FirstPage implements Initializable {
     void loginButtonClicked(MouseEvent event) throws IOException {
         Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF("login-"+usernameField.getText()+passwordField.getText()  );
+        dataOutputStream.writeUTF("login-"+usernameField.getText()+"-"+passwordField.getText()  );
         ChatroomView.socket = socket;
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml")).load()));
     }
@@ -43,7 +43,7 @@ public class FirstPage implements Initializable {
     void signUpButtonClicked(MouseEvent event) throws IOException {
         Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF("signup-"+usernameField.getText()+passwordField.getText()  );
+        dataOutputStream.writeUTF("signup-"+usernameField.getText()+"-"+passwordField.getText()  );
         ChatroomView.socket = socket;
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml")).load()));
     }
