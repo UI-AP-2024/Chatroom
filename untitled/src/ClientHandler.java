@@ -157,7 +157,7 @@ public class ClientHandler extends Thread{
             Database.getDatabase().getClients().remove(this);
             this.socket.close();
             writer.close();
-            if(Database.getDatabase().getClients().size()==0)
+            if(Database.getDatabase().getClients().isEmpty())
                 Server.getServerSocket().close();
         }
          catch (Exception e) {
