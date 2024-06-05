@@ -6,7 +6,9 @@ import javax.naming.ldap.SortKey;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.MessageDigestSpi;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class Client implements Runnable{
     final private static ArrayList<Socket> sockets = new ArrayList<>();
     final private static ArrayList<Client> clients = new ArrayList<>();
+    final private static ArrayList<Message> messages = new ArrayList<>();
     private static int IDMaker = 1;
     private Socket socket;
     private String name;
@@ -46,11 +49,32 @@ public class Client implements Runnable{
         String[] command = message.split("-");
         switch (command[0]){
             case "send message" -> {
+                addMessage(command[1], true, this);
                 showMessage(command[1]);
+            }
+            case "search" -> {
+                switch (command[1]) {
+                    case "person"-> {
+                        ArrayList<Message> result = new ArrayList<>();
+                        for (Message msg : messages) {
+                            if (Objects.equals(msg.getSentBy().getName(), command[2]))
+                                result.add(msg);
+                        }
+                    }
+                    case "time" -> {
+
+                    }
+                }
             }
         }
     }
-
+    public void searchResult(ArrayList<Message> messages) throws IOException {
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        objectOutputStream.writeObject(messages);
+    }
+    public void addMessage(String content,  boolean value, Client sentBy) {
+        messages.add(new Message(content, value, sentBy));
+    }
     public void showMessage(String string) throws IOException {
         for (Socket socket : sockets){
             if ( socket != this.socket) {
