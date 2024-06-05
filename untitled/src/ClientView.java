@@ -23,8 +23,10 @@ public class ClientView
             Client.setStartTime(System.currentTimeMillis());
             while (true)
             {
+                System.out.println("pls enter your ID");
                 Client.setID(sc.nextLine());
                 writer.println(Client.getID());
+                System.out.println("pls enter your name");
                 Client.setName(sc.nextLine());
                 writer.println(Client.getName());
                 writer.flush();
