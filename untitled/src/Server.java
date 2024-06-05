@@ -8,7 +8,7 @@ public class Server {
         try {
             Database.getDatabase().makeConnection();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw e;
         }
         try {
             serverSocket=new ServerSocket(1234);

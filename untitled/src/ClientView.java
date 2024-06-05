@@ -60,7 +60,15 @@ public class ClientView
                     }
                     if(Client.isEnterPV())
                         pv();
-                    System.out.println("----------------------------------");
+                    System.out.println("------------------------------------------");
+                }
+                else if (input.compareTo("block") == 0)
+                {
+                    writer.println("block");
+                    writer.flush();
+                    writer.println(sc.nextLine());
+                    writer.flush();
+                    System.out.println("user blocked!");
                 }
                 else if(input.compareTo("search")==0)
                 {

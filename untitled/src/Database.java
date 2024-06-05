@@ -289,4 +289,49 @@ public class Database
         String temp=hour+":"+minute+":"+second;
         return temp;
     }
+
+    public String showAllUsers() throws SQLException{
+        StringBuilder answer=new StringBuilder("-----------------all users----------------\n");
+        String sqlcmd="SELECT ID from users ";
+        Statement statement=con.prepareStatement(sqlcmd);
+        ResultSet resultSet=statement.executeQuery(sqlcmd);
+        while (resultSet.next()){
+            answer.append(resultSet.getString("ID")).append("\n");
+        }
+        answer.append("------------------------------------------\n");
+        return answer.toString();
+    }
+
+    public boolean blockUser(String blockedID,String blockerID,boolean isInsert){
+        try{
+            String query="SELECT * From blockedusers ";
+            Statement statement=con.prepareStatement(query);
+            ResultSet rs=statement.executeQuery(query);
+            boolean exist=false;
+            while (rs.next())
+            {
+                if(rs.getString("blockedID").compareTo(blockedID)==0 && rs.getString("blockerID").compareTo(blockerID)==0)
+                {
+                    exist=true;
+                }
+            }
+            if(exist)
+            {
+                return exist;
+            }
+            else
+            {
+                if(isInsert){
+                    int num=getMaxNum("blockedusers");
+                    String cmd=String.format("INSERT INTO blockedusers (num,blockedID,blockerID) VALUES (%d,'%s','%s')",num,blockedID,blockerID);
+                    statement=con.prepareStatement(cmd);
+                    statement.execute(cmd);
+                    return true;
+                }
+                else return false;
+            }
+        }catch (Exception exception){
+            return false;
+        }
+    }
 }

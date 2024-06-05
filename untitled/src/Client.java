@@ -59,6 +59,13 @@ public class Client {
                                     main.notifyAll();
                                 }
                             }
+                            else if(mess.compareTo("You are blocked!")==0){
+                                enterPV=false;
+                                synchronized (main)
+                                {
+                                    main.notifyAll();
+                                }
+                            }
                         }
                     }catch (Exception exception){}
                 }

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class ClientHandler extends Thread{
     private Socket socket;
@@ -106,27 +107,39 @@ public class ClientHandler extends Thread{
                         String ID=bufferedReader.readLine();
                         if(Database.getDatabase().userNameExist(ID))
                         {
-                            lastTimeInChatroom=LocalTime.now();
-                            writer.println("pv started");
-                            writer.flush();
-                            writer.write(Database.getDatabase().showPreviousPVMessages(this,this.ID,ID));
-                            writer.flush();
-                            pvEnd=true;
-                            new Thread(){
-                                public void run()
-                                {
-                                    readingCurrentMessages(ID);
-                                }
-                            }.start();
-                            pv(ID);
-                            writer.write(Database.getDatabase().unseenMessChatroom(this));
-                            writer.flush();
+                            if(Database.getDatabase().blockUser(this.ID,ID,false)){
+                                writer.println("You are blocked!");
+                                writer.flush();
+                            }
+                            else{
+                                lastTimeInChatroom=LocalTime.now();
+                                writer.println("pv started");
+                                writer.flush();
+                                writer.write(Database.getDatabase().showPreviousPVMessages(this,this.ID,ID));
+                                writer.flush();
+                                pvEnd=true;
+                                new Thread(){
+                                    public void run()
+                                    {
+                                        readingCurrentMessages(ID);
+                                    }
+                                }.start();
+                                pv(ID);
+                                writer.write(Database.getDatabase().unseenMessChatroom(this));
+                                writer.flush();
+                            }
                         }
                         else
                         {
                             writer.println("username Not Found Or is offline");
                             writer.flush();
                         }
+                    }
+                    else if(massage.compareTo("block")==0){
+                        writer.write(Database.getDatabase().showAllUsers());
+                        writer.flush();
+                        String ID=bufferedReader.readLine();
+                        Database.getDatabase().blockUser(ID,this.ID,true);
                     }
                     else
                     {
