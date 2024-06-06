@@ -6,7 +6,6 @@ import lombok.Setter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.ParseException;
 import java.time.LocalTime;
@@ -57,10 +56,22 @@ public class Client implements Runnable{
                 switch (command[1]) {
                     case "person"-> searchPerson(command[2]);
                     case "time" -> searchTime(command[2], command[3]);
-
                 }
             }
+            case "online" -> {
+                showOnlinePeople();
+            }
         }
+    }
+    public void showOnlinePeople() throws IOException {
+        String result = null;
+        for (Client client : clients){
+            if (client.getSocket().isConnected() && client != this){
+                result += client.getName() + "-" + client.getID();
+            }
+        }
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataOutputStream.writeUTF(result);
     }
     public void searchPerson(String person) throws IOException {
         String result = "person";

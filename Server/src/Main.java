@@ -11,7 +11,5 @@ public class Main {
             String input = dataInputStream.readUTF();
             Client.handleLoginAndSignup(input, socket);
         }
-
-
     }
 }
