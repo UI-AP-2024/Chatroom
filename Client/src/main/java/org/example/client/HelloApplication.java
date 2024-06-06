@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
         myStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("first-page.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 700);
-        stage.setTitle("Welcome to Silent Room!");
+        stage.setTitle("Welcome to Silent Room  !");
         stage.setScene(scene);
         stage.show();
     }

@@ -91,6 +91,7 @@ public class ChatroomPage implements Initializable {
 
     @FXML
     void privateChatButtonClicked(MouseEvent event) throws IOException {
+        OnlinePeople.socket = socket;
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("online-people.fxml")).load()));
     }
 
@@ -154,21 +155,13 @@ public class ChatroomPage implements Initializable {
                         searchTime(strings);
                     }, "time").start();
                 }
-                case "pv" -> {
-                    new Thread(() -> {
-                        onlinePeople(strings);
-                    }, "pv").start();
-                }
             }
         }
     }
-    public void onlinePeople(String[] strings){
-
-    }
     public void searchTime(String[] strings){
         for (int i = 1 ; i < strings.length-1 ; i++){
-            System.out.print(i+1);
-            System.out.println(i++);
+            System.out.print(strings[i]);
+            System.out.println(strings[++i]);
         }
     }
     public void searchPerson(String[] strings){
