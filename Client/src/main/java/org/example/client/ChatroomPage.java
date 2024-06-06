@@ -5,27 +5,32 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextField;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatroomPage implements Initializable {
-
-    static int counter = 0;
+    static int counter = 2;
     public static Socket socket;
+    @FXML
+    private ScrollPane scrollPane;
 
     @FXML
     private TextField firstField;
@@ -64,7 +69,17 @@ public class ChatroomPage implements Initializable {
 
     @FXML
     void personSearchClicked(ActionEvent event) {
+        firstField.setPromptText("Name");
+        secondField.setVisible(false);
+        firstField.setVisible(true);
+    }
 
+    @FXML
+    void timeToTimeSearchClicked(ActionEvent event) throws IOException {
+        firstField.setPromptText("From");
+        secondField.setPromptText("Until");
+        secondField.setVisible(true);
+        firstField.setVisible(true);
     }
 
     @FXML
@@ -78,8 +93,18 @@ public class ChatroomPage implements Initializable {
     }
 
     @FXML
-    void searchIconClicked(MouseEvent event) {
-
+    void searchIconClicked(MouseEvent event) throws IOException, InterruptedException, ClassNotFoundException {
+        if (!secondField.isVisible()) {
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("search-person-" + firstField.getText());
+        }else{
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("search-time-"+firstField.getText()+"-"+secondField.getText());
+        }
+        firstField.setVisible(false);
+        secondField.setVisible(false);
+        firstField.setText(null);
+        secondField.setText(null);
     }
 
     @FXML
@@ -94,44 +119,84 @@ public class ChatroomPage implements Initializable {
 
     }
 
-    @FXML
-    void timeToTimeSearchClicked(ActionEvent event) {
-
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        firstField.setVisible(false);
+        secondField.setVisible(false);
         new Thread(() -> {
             try {
-                showMessages();
+                splitCommand();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        }, "controlMessagesThread").start();
+        },"messageController").start();
     }
 
-    public void showMessages() throws IOException {
-        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        while (socket.isConnected()) {
-            try {
-                String[] msg = dataInputStream.readUTF().split("-");
-                Platform.runLater(() -> {
-                    BorderPane borderPane = new BorderPane();
-                    Label label = new Label();
-                    if (Objects.equals(msg[0], "other") && Objects.equals(msg[1], "message")) {
-                        label.setText(msg[2]);
-                        borderPane.setLeft(label);
-                        messageGridPane.add(borderPane, 0, counter++);
-                    } else if (Objects.equals(msg[0], "your") && Objects.equals(msg[1], "message")) {
-                        label.setText(msg[2]);
-                        borderPane.setRight(label);
-                        messageGridPane.add(borderPane, 0, counter++);
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
+    public void splitCommand() throws IOException {
+        while (true) {
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            String[] strings = dataInputStream.readUTF().split("-");
+            switch (strings[0]) {
+                case "message" -> {
+                    new Thread(() -> {
+                        showMessages(strings);
+                    }, "message").start();
+                }
+                case "person" -> {
+                    new Thread(() -> {
+                        searchPerson(strings);
+                    }, "person").start();
+                }
+                case "time" -> {
+                    new Thread(() -> {
+                        searchTime(strings);
+                    }, "time").start();
+                }
+                case "pv" -> {
+                    new Thread(() -> {
+                        onlinePeople(strings);
+                    }, "pv").start();
+                }
             }
         }
+    }
+    public void onlinePeople(String[] strings){
+
+    }
+    public void searchTime(String[] strings){
+        for (int i = 1 ; i < strings.length-1 ; i++){
+            System.out.print(i+1);
+            System.out.println(i++);
+        }
+    }
+    public void searchPerson(String[] strings){
+        for (int i = 1 ; i < strings.length ; i++){
+            System.out.println(strings[i]);
+        }
+    }
+    public void showMessages(String[] string){
+        Platform.runLater(() -> {
+            BorderPane borderPane = new BorderPane();
+            TextArea message = new TextArea();
+            if (Objects.equals(string[0], "message") && Objects.equals(string[1], "other")) {
+                message.setText(string[2]+"  ");
+                designMessage(borderPane,message);
+                message.setBackground(Background.fill(Paint.valueOf("black")));
+                messageGridPane.add(borderPane, 0, counter++);
+            } else if (Objects.equals(string[0], "message") && Objects.equals(string[1], "your")) {
+                message.setText(string[2]+"  ");
+                designMessage(borderPane,message);
+                message.setBackground(Background.fill(Paint.valueOf("purple")));
+                messageGridPane.add(borderPane, 2, counter++);
+            }
+        });
+    }
+    public void designMessage(BorderPane borderPane , TextArea message){
+        message.setFont(Font.font(18));
+        message.setPadding(new Insets(10 ,0,10,10));
+        message.setWrapText(true);
+        message.setMaxWidth(160);
+        borderPane.setCenter(message);
+        message.setDisable(true);
     }
 }

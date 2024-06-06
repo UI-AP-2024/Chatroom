@@ -1,5 +1,8 @@
+
+
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -47,7 +50,7 @@ public class Client implements Runnable{
         String[] command = message.split("-");
         switch (command[0]){
             case "send message" -> {
-                addMessage(command[1], this.getID());
+                messages.add(new Message(command[1],  this.getID()));
                 showMessage(command[1]);
             }
             case "search" -> {
@@ -60,45 +63,40 @@ public class Client implements Runnable{
         }
     }
     public void searchPerson(String person) throws IOException {
-        Client c = null;
-        for (Client client : clients)
-            if (Objects.equals(client.getName(), person))
-                c = client;
-        ArrayList<String> result = new ArrayList<>();
-        for (Message msg : messages) {
-            assert c != null;
-            if (Objects.equals(msg.getSentByID(), c.ID))
-                result.add(msg.getContent() + "-" + msg.getTime());
+        String result = "person";
+        for (Client clientReader : clients) {
+            if (Objects.equals(clientReader.getName(), person)) {
+                for (Message msg : messages) {
+                    if (Objects.equals(msg.getSentByID(), clientReader.getID()))
+                        result += "-" + msg.getContent();
+                }
+            }
         }
-
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-        objectOutputStream.writeObject(result);
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataOutputStream.writeUTF(result);
     }
     public void searchTime(String start, String end) throws IOException {
-
-        ArrayList<String> result = new ArrayList<>();
+        String result = "time";
         for (Message msg : messages)
             if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end))) {
-                StringBuilder s = new StringBuilder();
-                s.append(msg.getContent()).append("-").append(msg.getTime()).append("-");
-                for (Client client : clients)
-                    if (client.getID() == msg.getSentByID())
-                        s.append(client.getName());
-                result.add(s.toString());
+                result += "-"+msg.getContent() + "-";
+                for (Client client : clients) {
+                    if (client.getID() == msg.getSentByID()) {
+                        result += client.getName();
+                        break;
+                    }
+                }
             }
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-        objectOutputStream.writeObject(result);
-    }
-    public void addMessage(String content, int sentByID) throws ParseException {
-        messages.add(new Message(content, sentByID));
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataOutputStream.writeUTF(result);
     }
     public void showMessage(String string) throws IOException {
         for (Socket socket : sockets){
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             if ( socket != this.socket)
-                dataOutputStream.writeUTF("other-message-" + string + "-" + this.getName());
+                dataOutputStream.writeUTF("message-other-" + string + "-" + this.getName());
             else
-                dataOutputStream.writeUTF("your-message-" + string);
+                dataOutputStream.writeUTF("message-your-" + string + "-" + this.getName());
         }
     }
 
