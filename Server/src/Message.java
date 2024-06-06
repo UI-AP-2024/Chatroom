@@ -17,6 +17,6 @@ public class Message implements Serializable {
     public Message(String content, int sentByID) throws ParseException {
         this.content = content;
         this.sentByID = sentByID;
-        this.time = LocalTime.parse(LocalTime.now().getHour() + ":" + (String.valueOf(LocalTime.now().getMinute()).length() != 1 ? LocalTime.now().getMinute() : "0" + LocalTime.now().getMinute()) + ":" + (String.valueOf(LocalTime.now().getMinute()).length() != 1 ? LocalTime.now().getMinute() : "0" + LocalTime.now().getMinute()) );
+        this.time = LocalTime.parse((String.valueOf(LocalTime.now().getHour()).length() != 1 ? LocalTime.now().getHour() : "0" + LocalTime.now().getHour()) + ":" + (String.valueOf(LocalTime.now().getMinute()).length() != 1 ? LocalTime.now().getMinute() : "0" + LocalTime.now().getMinute()) + ":" + (String.valueOf(LocalTime.now().getMinute()).length() != 1 ? LocalTime.now().getMinute() : "0" + LocalTime.now().getMinute()) );
     }
 }

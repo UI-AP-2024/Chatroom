@@ -88,9 +88,12 @@ public class Client implements Runnable{
     }
     public void searchTime(String start, String end) throws IOException {
         String result = "time";
-        for (Message msg : messages)
+        for (Message msg : messages) {
+            System.out.println(msg.getTime());
+            System.out.println(LocalTime.parse(start));
+            System.out.println(LocalTime.parse(end));
             if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end))) {
-                result += "-"+msg.getContent() + "-";
+                result += ("-"+msg.getContent() + "-");
                 for (Client client : clients) {
                     if (client.getID() == msg.getSentByID()) {
                         result += client.getName();
@@ -98,6 +101,8 @@ public class Client implements Runnable{
                     }
                 }
             }
+        }
+        System.out.println(result);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(result);
     }
