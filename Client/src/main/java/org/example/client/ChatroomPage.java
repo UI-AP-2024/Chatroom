@@ -4,8 +4,10 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -88,8 +90,8 @@ public class ChatroomPage implements Initializable {
     }
 
     @FXML
-    void privateChatButtonClicked(MouseEvent event) {
-
+    void privateChatButtonClicked(MouseEvent event) throws IOException {
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("online-people.fxml")).load()));
     }
 
     @FXML
