@@ -1,14 +1,10 @@
-
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.naming.ldap.SortKey;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.security.MessageDigestSpi;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -51,55 +47,58 @@ public class Client implements Runnable{
         String[] command = message.split("-");
         switch (command[0]){
             case "send message" -> {
-                addMessage(command[1], true, this);
+                addMessage(command[1], this.getID());
                 showMessage(command[1]);
             }
             case "search" -> {
                 switch (command[1]) {
-                    case "person"-> {
-                        searchPerson(command[2]);
-                    }
-                    case "time" -> {
-                        searchTime(command[2], command[3]);
-                    }
+                    case "person"-> searchPerson(command[2]);
+                    case "time" -> searchTime(command[2], command[3]);
+
                 }
             }
         }
     }
     public void searchPerson(String person) throws IOException {
-        ArrayList<Message> result = new ArrayList<>();
-        for (Message msg : messages)
-            if (Objects.equals(msg.getSentBy().getName(), person))
-                result.add(msg);
+        Client c = null;
+        for (Client client : clients)
+            if (Objects.equals(client.getName(), person))
+                c = client;
+        ArrayList<String> result = new ArrayList<>();
+        for (Message msg : messages) {
+            assert c != null;
+            if (Objects.equals(msg.getSentByID(), c.ID))
+                result.add(msg.getContent() + "-" + msg.getTime());
+        }
 
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectOutputStream.writeObject(result);
     }
     public void searchTime(String start, String end) throws IOException {
 
-        ArrayList<Message> result = new ArrayList<>();
+        ArrayList<String> result = new ArrayList<>();
         for (Message msg : messages)
-            if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end)))
-                result.add(msg);
+            if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end))) {
+                StringBuilder s = new StringBuilder();
+                s.append(msg.getContent()).append("-").append(msg.getTime()).append("-");
+                for (Client client : clients)
+                    if (client.getID() == msg.getSentByID())
+                        s.append(client.getName());
+                result.add(s.toString());
+            }
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectOutputStream.writeObject(result);
     }
-    public void addMessage(String content,  boolean isPublic, Client sentBy) throws ParseException {
-        messages.add(new Message(content, sentBy, true, isPublic));
+    public void addMessage(String content, int sentByID) throws ParseException {
+        messages.add(new Message(content, sentByID));
     }
-    public void showMessage(String string) throws IOException, ParseException {
+    public void showMessage(String string) throws IOException {
         for (Socket socket : sockets){
-            if ( socket != this.socket) {
-//                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-//                dataOutputStream.writeUTF("other-message-" + string);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                objectOutputStream.writeObject(new Message(string, this, false, true));
-            }else{
-//                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-//                dataOutputStream.writeUTF("your-message-" + string);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                objectOutputStream.writeObject(new Message(string, this, true, true));
-            }
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            if ( socket != this.socket)
+                dataOutputStream.writeUTF("other-message-" + string + "-" + this.getName());
+            else
+                dataOutputStream.writeUTF("your-message-" + string);
         }
     }
 
