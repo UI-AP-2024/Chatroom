@@ -9,7 +9,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -35,8 +34,8 @@ public class FirstPage implements Initializable {
         Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("login-"+usernameField.getText()+"-"+passwordField.getText()  );
-        ChatroomView.socket = socket;
-        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml")).load()));
+        ChatroomPage.socket = socket;
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-page.fxml")).load()));
     }
 
     @FXML
@@ -44,8 +43,8 @@ public class FirstPage implements Initializable {
         Socket socket = new Socket("127.0.0.1", 1234);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("signup-"+usernameField.getText()+"-"+passwordField.getText()  );
-        ChatroomView.socket = socket;
-        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-view.fxml")).load()));
+        ChatroomPage.socket = socket;
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-page.fxml")).load()));
     }
 
     @Override
