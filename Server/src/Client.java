@@ -58,45 +58,43 @@ public class Client implements Runnable{
                     case "time" -> searchTime(command[2], command[3]);
                 }
             }
-            case "online" -> {
-                showOnlinePeople();
-            }
+            case "online" -> showOnlinePeople();
         }
     }
     public void showOnlinePeople() throws IOException {
-        String result = null;
+        StringBuilder result = null;
         for (Client client : clients){
             if (client.getSocket().isConnected() && client != this){
-                result += client.getName() + "-" + client.getID();
+                result.append(client.getName()).append("-").append(client.getID());
             }
         }
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF(result);
+        dataOutputStream.writeUTF(result.toString());
     }
     public void searchPerson(String person) throws IOException {
-        String result = "person";
+        StringBuilder result = new StringBuilder("person");
         for (Client clientReader : clients) {
             if (Objects.equals(clientReader.getName(), person)) {
                 for (Message msg : messages) {
                     if (Objects.equals(msg.getSentByID(), clientReader.getID()))
-                        result += "-" + msg.getContent();
+                        result.append("-").append(msg.getContent());
                 }
             }
         }
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF(result);
+        dataOutputStream.writeUTF(result.toString());
     }
     public void searchTime(String start, String end) throws IOException {
-        String result = "time";
+        StringBuilder result = new StringBuilder("time");
         for (Message msg : messages) {
             System.out.println(msg.getTime());
             System.out.println(LocalTime.parse(start));
             System.out.println(LocalTime.parse(end));
             if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end))) {
-                result += ("-"+msg.getContent() + "-");
+                result.append("-").append(msg.getContent()).append("-");
                 for (Client client : clients) {
                     if (client.getID() == msg.getSentByID()) {
-                        result += client.getName();
+                        result.append(client.getName());
                         break;
                     }
                 }
@@ -104,7 +102,7 @@ public class Client implements Runnable{
         }
         System.out.println(result);
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF(result);
+        dataOutputStream.writeUTF(result.toString());
     }
     public void showMessage(String string) throws IOException {
         for (Socket socket : sockets){
