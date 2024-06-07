@@ -62,7 +62,7 @@ public class Client implements Runnable{
         }
     }
     public void showOnlinePeople() throws IOException {
-        StringBuilder result = null;
+        StringBuilder result = new StringBuilder();
         for (Client client : clients){
             if (client.getSocket().isConnected() && client != this){
                 result.append(client.getName()).append("-").append(client.getID());
@@ -87,9 +87,6 @@ public class Client implements Runnable{
     public void searchTime(String start, String end) throws IOException {
         StringBuilder result = new StringBuilder("time");
         for (Message msg : messages) {
-            System.out.println(msg.getTime());
-            System.out.println(LocalTime.parse(start));
-            System.out.println(LocalTime.parse(end));
             if (msg.getTime().isAfter(LocalTime.parse(start)) && msg.getTime().isBefore(LocalTime.parse(end))) {
                 result.append("-").append(msg.getContent()).append("-");
                 for (Client client : clients) {
