@@ -96,9 +96,9 @@ public class Client implements Runnable{
                 break;
             }
         assert dataOutputStream != null;
-        dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
-        dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
-        pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[2])));
+        dataOutputStream.writeUTF("pv-" + "other-" + message[3]);
+        dataOutputStream1.writeUTF("pv-" + "your-" + message[3]);
+        pvMessages.add(new PvMessage(message[3], this.ID, Integer.parseInt(message[2])));
     }
 
     public void sendPing() throws IOException{
