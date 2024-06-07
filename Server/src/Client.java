@@ -59,8 +59,15 @@ public class Client implements Runnable{
                 }
             }
             case "online" -> showOnlinePeople();
+            case "ping" -> sendPing();
         }
     }
+
+    private void sendPing() throws IOException{
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataOutputStream.writeUTF("ping");
+    }
+
     public void showOnlinePeople() throws IOException {
         StringBuilder result = new StringBuilder();
         for (Client client : clients){
