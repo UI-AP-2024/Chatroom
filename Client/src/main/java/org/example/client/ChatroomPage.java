@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -94,12 +95,11 @@ public class ChatroomPage implements Initializable {
 
     @FXML
     void privateChatButtonClicked(MouseEvent event) throws IOException {
-        OnlinePeople.socket = socket;
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("online-people.fxml")).load()));
     }
 
     @FXML
-    void searchIconClicked(MouseEvent event) throws IOException, InterruptedException, ClassNotFoundException {
+    void searchIconClicked(MouseEvent event) throws IOException {
         if (!secondField.isVisible()) {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeUTF("search-person-" + firstField.getText());
@@ -135,7 +135,7 @@ public class ChatroomPage implements Initializable {
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        },"messageController").start();
+        }).start();
     }
 
     public void splitCommand() throws IOException {
@@ -146,22 +146,20 @@ public class ChatroomPage implements Initializable {
                 case "message" -> {
                     new Thread(() -> {
                         showMessages(strings);
-                    }, "message").start();
+                    }).start();
                 }
                 case "person" -> {
                     new Thread(() -> {
                         searchPerson(strings);
-                    }, "person").start();
+                    }).start();
                 }
                 case "time" -> {
                     new Thread(() -> {
                         searchTime(strings);
-                    }, "time").start();
+                    }).start();
                 }
                 case "ping" -> {
-                    new Thread(() -> {
-                        showPing();
-                    }, "ping").start();
+                    new Thread(this::showPing).start();
                 }
             }
         }

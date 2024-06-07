@@ -58,7 +58,9 @@ public class Client implements Runnable{
                     case "time" -> searchTime(command[2], command[3]);
                 }
             }
-            case "online" -> showOnlinePeople();
+            case "online" -> {
+                showOnlinePeople();
+            }
             case "ping" -> sendPing();
         }
     }
@@ -69,14 +71,15 @@ public class Client implements Runnable{
     }
 
     public void showOnlinePeople() throws IOException {
-        StringBuilder result = new StringBuilder();
+        String result = "people";
         for (Client client : clients){
-            if (client.getSocket().isConnected() && client != this){
-                result.append(client.getName()).append("-").append(client.getID());
+            if (client.getSocket().isConnected() && this.socket!= client.socket){
+                result += "-" + client.getName() + "-" + client.getID();
             }
         }
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF(result.toString());
+        dataOutputStream.writeUTF(result);
+
     }
     public void searchPerson(String person) throws IOException {
         StringBuilder result = new StringBuilder("person");

@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <AnchorPane prefHeight="700.0" prefWidth="600.0" styleClass="first" stylesheets="@../../../Css/BackGround.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.client.OnlinePeople">
    <children>
-      <ScrollPane hbarPolicy="NEVER" layoutX="138.0" layoutY="57.0" prefHeight="578.0" prefWidth="318.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="50.0">
-         <content>
-            <GridPane fx:id="peopleGridPane" prefHeight="81.0" prefWidth="320.0" style="-fx-background-color: silver;">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-            </GridPane>
-         </content>
-      </ScrollPane>
+      <AnchorPane layoutX="90.0" layoutY="40.0" prefHeight="597.0" prefWidth="390.0" style="-fx-background-color: gray; -fx-background-radius: 40 40 40 40; -fx-border-color: white; -fx-border-radius: 37 37 37 37; -fx-border-width: 3;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.79999999999995" AnchorPane.topAnchor="40.0">
+         <children>
+            <ScrollPane hbarPolicy="NEVER" layoutX="50.0" layoutY="90.0" prefHeight="515.0" prefWidth="318.0" vbarPolicy="ALWAYS">
+               <content>
+                  <GridPane fx:id="peopleGridPane" prefHeight="81.0" prefWidth="320.0" style="-fx-background-color: silver;">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+            <FontAwesomeIcon fx:id="refreshIcon" glyphName="REFRESH" layoutX="194.0" layoutY="58.0" onMouseClicked="#refreshIconClicked" size="3em" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
