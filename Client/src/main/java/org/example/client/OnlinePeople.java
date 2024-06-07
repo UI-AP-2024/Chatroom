@@ -71,7 +71,7 @@ public class OnlinePeople implements Initializable {
                 label.setFont(Font.font(25));
                 BorderPane borderPane = new BorderPane(label);
                 borderPane.setId(strings[i]);
-                borderPane.setCenter(label);
+                borderPane.setTop(label);
                 label.setTextAlignment(TextAlignment.CENTER);
                 borderPane.setOnMouseClicked(event -> {
                     try {

@@ -196,7 +196,7 @@ public class ChatroomPage implements Initializable {
             }
         });
     }
-    public void designMessage(BorderPane borderPane , TextArea message){
+    public static void designMessage(BorderPane borderPane , TextArea message){
         message.setFont(Font.font(18));
         message.setPadding(new Insets(10 ,0,10,10));
         message.setWrapText(true);
