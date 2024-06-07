@@ -3,7 +3,9 @@ package org.example.client;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
@@ -72,10 +74,18 @@ public class OnlinePeople implements Initializable {
                 borderPane.setCenter(label);
                 label.setTextAlignment(TextAlignment.CENTER);
                 borderPane.setOnMouseClicked(event -> {
-                    System.out.println(borderPane.getId());
+                    try {
+                        chatroomRequest(borderPane);
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
                 });
                 peopleGridPane.add(borderPane, 0, i);
             }
         });
+    }
+    public void chatroomRequest(BorderPane borderPane) throws IOException {
+        PrivateChat.personID = borderPane.getId();
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("private-chat.fxml")).load()));
     }
 }
