@@ -69,7 +69,7 @@ public class OnlinePeople implements Initializable {
             for (int i = 1; i < strings.length - 1; i++) {
                 Label label = new Label(strings[i++]);
                 label.setFont(Font.font(25));
-                BorderPane borderPane = new BorderPane(label);
+                BorderPane borderPane = new BorderPane();
                 borderPane.setId(strings[i]);
                 borderPane.setTop(label);
                 label.setTextAlignment(TextAlignment.CENTER);
