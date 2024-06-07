@@ -69,12 +69,16 @@ public class PrivateChat implements Initializable {
         while (true){
             DataInputStream dataInputStream = new DataInputStream(ChatroomPage.socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
-            new Thread(() -> {
-                showMessages(strings);
-            }).start();
+            if (Objects.equals(strings[0], "null")){
+                System.out.println("nothing");
+            }else {
+                new Thread(() -> {
+                    showMessages(strings);
+                }).start();
+            }
         }
     }
-    public void showMessages(String[] string){
+    synchronized public void showMessages(String[] string){
         Platform.runLater(() -> {
             BorderPane borderPane = new BorderPane();
             TextArea message = new TextArea();
@@ -87,7 +91,7 @@ public class PrivateChat implements Initializable {
                 message.setText(string[2]+"  ");
                 ChatroomPage.designMessage(borderPane,message);
                 message.setBackground(Background.fill(Paint.valueOf("purple")));
-                messageGridPane.add(borderPane, 2, counter++);
+                messageGridPane.add(borderPane, 1, counter++);
             }
         });
     }

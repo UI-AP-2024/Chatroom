@@ -88,17 +88,18 @@ public class Client implements Runnable{
     }
 
     public void sendToPv(String[] message) throws ParseException, IOException {
-        DataOutputStream dataOutputStream = null;
         DataOutputStream dataOutputStream1 = new DataOutputStream(socket.getOutputStream());
-        for (Client client : clients)
-            if (String.valueOf(client.getID()).equals(message[2])) {
-                dataOutputStream = new DataOutputStream(client.socket.getOutputStream());
-                break;
-            }
-        assert dataOutputStream != null;
-        dataOutputStream.writeUTF("pv-" + "other-" + message[3]);
-        dataOutputStream1.writeUTF("pv-" + "your-" + message[3]);
-        pvMessages.add(new PvMessage(message[3], this.ID, Integer.parseInt(message[2])));
+       for (Client client : clients) {
+           if (client.getID() == Integer.parseInt(message[3])) {
+               DataOutputStream dataOutputStream = new DataOutputStream(client.getSocket().getOutputStream());
+               pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[3])));
+               dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
+               if (client.getSocket().isConnected()) {
+                   dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
+               }
+               break;
+           }
+       }
     }
 
     public void sendPing() throws IOException{
@@ -147,10 +148,10 @@ public class Client implements Runnable{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(result.toString());
     }
-    public void showMessage(String string) throws IOException {
+    public void showMessage(String string) throws IOException{
         for (Socket socket : sockets){
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            if ( socket != this.socket)
+            DataOutputStream dataOutputStream = new DataOutputStream (socket.getOutputStream());
+            if ( socket != this.socket )
                 dataOutputStream.writeUTF("message-other-" + string + "-" + this.getName());
             else
                 dataOutputStream.writeUTF("message-your-" + string + "-" + this.getName());
@@ -159,10 +160,10 @@ public class Client implements Runnable{
 
     public static void handleLoginAndSignup(String input, Socket socket) {
         String[] strings = input.split("-");
-        if (Objects.equals(strings[0], "login")){
+        if (Objects.equals(strings[0],"login")){
             login(strings[1], strings[2], socket);
         }
-        else if (Objects.equals(strings[0], "signup")) {
+        else if (Objects.equals(strings[0],"signup")) {
             signup(strings[1], strings[2], socket);
         }
     }
