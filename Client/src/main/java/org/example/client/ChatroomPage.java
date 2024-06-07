@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 public class ChatroomPage implements Initializable {
     static int counter = 2;
     public static Socket socket;
+    private long start;
     @FXML
     private ScrollPane scrollPane;
 
@@ -85,8 +86,10 @@ public class ChatroomPage implements Initializable {
     }
 
     @FXML
-    void pingButtonClicked(MouseEvent event) {
-
+    void pingButtonClicked(MouseEvent event) throws IOException {
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        start = System.currentTimeMillis();
+        dataOutputStream.writeUTF("ping");
     }
 
     @FXML
@@ -155,8 +158,17 @@ public class ChatroomPage implements Initializable {
                         searchTime(strings);
                     }, "time").start();
                 }
+                case "ping" -> {
+                    new Thread(() -> {
+                        showPing();
+                    }, "ping").start();
+                }
             }
         }
+    }
+
+    public void showPing(){
+        System.out.println((System.currentTimeMillis()-start));
     }
     public void searchTime(String[] strings){
         for (int i = 1 ; i < strings.length-1 ; i++){
