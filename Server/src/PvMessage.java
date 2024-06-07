@@ -7,7 +7,7 @@ import java.text.ParseException;
 @Setter
 public class PvMessage extends Message{
     private int sentToID;
-    private PvMessage(String content, int sentByIDm, int sentToID) throws ParseException {
+    public PvMessage(String content, int sentByIDm, int sentToID) throws ParseException {
         super(content, sentByIDm);
         this.sentToID = sentToID;
     }

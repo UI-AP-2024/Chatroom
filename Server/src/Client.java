@@ -18,6 +18,7 @@ public class Client implements Runnable{
     final private static ArrayList<Socket> sockets = new ArrayList<>();
     final private static ArrayList<Client> clients = new ArrayList<>();
     final private static ArrayList<Message> messages = new ArrayList<>();
+    final private static ArrayList<PvMessage> pvMessages = new ArrayList<>();
     private static int IDMaker = 1;
     private Socket socket;
     private String name;
@@ -58,27 +59,62 @@ public class Client implements Runnable{
                     case "time" -> searchTime(command[2], command[3]);
                 }
             }
-            case "online" -> {
-                showOnlinePeople();
-            }
+            case "online" -> showOnlinePeople();
             case "ping" -> sendPing();
+            case "pv" -> {
+                if (Objects.equals(command[1], "message"))
+                    sendToPv(command);
+                else
+                    sendPreviousMessages(command[2]);
+            }
         }
     }
 
-    private void sendPing() throws IOException{
+    public void sendPreviousMessages(String id) throws IOException{
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        boolean check = false;
+        for (PvMessage pvMessage : pvMessages) {
+            if (pvMessage.getSentByID() == this.getID() && pvMessage.getSentToID() == Integer.parseInt(id)) {
+                dataOutputStream.writeUTF("pv-" + "your-" + pvMessage.getContent());
+                check = true;
+            }
+            else if (pvMessage.getSentToID() == this.getID() && pvMessage.getSentByID() == Integer.parseInt(id)) {
+                dataOutputStream.writeUTF("pv-" + "other-" + pvMessage.getContent());
+                check = true;
+            }
+        }
+        if (!check)
+            dataOutputStream.writeUTF("null");
+    }
+
+    public void sendToPv(String[] message) throws ParseException, IOException {
+        DataOutputStream dataOutputStream = null;
+        DataOutputStream dataOutputStream1 = new DataOutputStream(socket.getOutputStream());
+        for (Client client : clients)
+            if (String.valueOf(client.getID()).equals(message[2])) {
+                dataOutputStream = new DataOutputStream(client.socket.getOutputStream());
+                break;
+            }
+        assert dataOutputStream != null;
+        dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
+        dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
+        pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[2])));
+    }
+
+    public void sendPing() throws IOException{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("ping");
     }
 
     public void showOnlinePeople() throws IOException {
-        String result = "people";
+        StringBuilder result = new StringBuilder("people");
         for (Client client : clients){
             if (client.getSocket().isConnected() && this.socket!= client.socket){
-                result += "-" + client.getName() + "-" + client.getID();
+                result.append("-").append(client.getName()).append("-").append(client.getID());
             }
         }
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF(result);
+        dataOutputStream.writeUTF(result.toString());
 
     }
     public void searchPerson(String person) throws IOException {
