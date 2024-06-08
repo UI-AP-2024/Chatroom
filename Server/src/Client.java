@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -25,13 +26,14 @@ public class Client implements Runnable{
     private String password;
 
 
-    public Client(String name,Socket socket, String password) {
+    public Client(String name,Socket socket, String password) throws SQLException {
         this.name = name;
         this.ID = IDMaker++;
         this.socket = socket;
         this.password = password;
         sockets.add(socket);
         clients.add(this);
+        Database.addClient(this.ID, name, password);
     }
     @Override
     public void run() {
@@ -187,7 +189,7 @@ public class Client implements Runnable{
         }
     }
 
-    public static void handleLoginAndSignup(String input, Socket socket) {
+    public static void handleLoginAndSignup(String input, Socket socket) throws SQLException {
         String[] strings = input.split("-");
         if (Objects.equals(strings[0],"login")){
             login(strings[1], strings[2], socket);
@@ -210,7 +212,7 @@ public class Client implements Runnable{
         }
     }
 
-    public static void signup(String name, String password, Socket socket) {
+    public static void signup(String name, String password, Socket socket) throws SQLException {
         for (Client client : clients) {
             if (Objects.equals(name, client.getName())) {
                 return;

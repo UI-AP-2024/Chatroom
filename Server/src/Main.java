@@ -1,9 +1,11 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
+        Database.executeSQL();
         ServerSocket serverSocket = new ServerSocket(1234);
         while (true) {
             Socket socket = serverSocket.accept();
