@@ -1,7 +1,5 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.text.ParseException;
 
 public class Database {
     static Connection connection;
@@ -27,5 +25,30 @@ public class Database {
         String sqlFormat = String.format("INSERT INTO  PvMessage (Content, Time, SentBy, SentTo) VALUES ('%s', '%s', %s, %s)", content, time, sentBy, sentTo);
         Statement statement = connection.prepareStatement(sqlFormat);
         statement.execute(sqlFormat);
+    }
+    //---------------------
+    public static void addClientsToList() throws SQLException {
+        String sqlFormat = String.format("SELECT * FROM Client");
+        Statement statement = connection.prepareStatement(sqlFormat);
+        ResultSet resultSet = statement.executeQuery(sqlFormat);
+        while (resultSet.next()) {
+            new Client(resultSet.getString("Name"), resultSet.getString("Password"));
+        }
+    }
+    public static void addMessageToList() throws SQLException, ParseException {
+        String sqlFormat = String.format("SELECT * FROM Message");
+        Statement statement = connection.prepareStatement(sqlFormat);
+        ResultSet resultSet = statement.executeQuery(sqlFormat);
+        while (resultSet.next()) {
+            Client.messages.add(new Message(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getString("Time")));
+        }
+    }
+    public static void addPvMessageToList() throws SQLException, ParseException {
+        String sqlFormat = String.format("SELECT * FROM PvMessage");
+        Statement statement = connection.prepareStatement(sqlFormat);
+        ResultSet resultSet = statement.executeQuery(sqlFormat);
+        while (resultSet.next()) {
+            Client.messages.add(new PvMessage(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getInt("SentTo"), resultSet.getString("Time")));
+        }
     }
 }

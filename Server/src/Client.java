@@ -15,10 +15,10 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Client implements Runnable{
-    final private static ArrayList<Socket> sockets = new ArrayList<>();
-    final private static ArrayList<Client> clients = new ArrayList<>();
-    final private static ArrayList<Message> messages = new ArrayList<>();
-    final private static ArrayList<PvMessage> pvMessages = new ArrayList<>();
+    static ArrayList<Socket> sockets = new ArrayList<>();
+    static ArrayList<Client> clients = new ArrayList<>();
+    static ArrayList<Message> messages = new ArrayList<>();
+    static ArrayList<PvMessage> pvMessages = new ArrayList<>();
     private static int IDMaker = 1;
     private Socket socket;
     private String name;
@@ -35,6 +35,13 @@ public class Client implements Runnable{
         clients.add(this);
         Database.addClient(this.ID, name, password);
     }
+    public Client(String name, String password) throws SQLException {
+        this.name = name;
+        this.ID = IDMaker++;
+        this.password = password;
+        clients.add(this);
+    }
+
     @Override
     public void run() {
         while (socket.isConnected()) {
