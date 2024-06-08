@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -35,6 +36,11 @@ public class ChatroomPage implements Initializable {
     static int counter = 2;
     public static Socket socket;
     private long start;
+
+
+    @FXML
+    private Button startMessagingButton;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -69,8 +75,15 @@ public class ChatroomPage implements Initializable {
     private FontAwesomeIcon stickerIcon;
 
     @FXML
-    void messageFieldPressed(KeyEvent event) {
+    void messageFieldPressed(KeyEvent event) throws IOException {
+    }
 
+    @FXML
+    void startMessagingButtonClicked(MouseEvent event) throws IOException {
+        startMessagingButton.setVisible(false);
+        startMessagingButton.setDisable(true);
+        DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
+        dataOutputStream.writeUTF("all-message");
     }
 
     @FXML
@@ -119,17 +132,8 @@ public class ChatroomPage implements Initializable {
     }
 
     @FXML
-    void sendIconClicked(MouseEvent event) throws IOException {
-        String[] strings = messageField.getText().split("-");
-        if (Objects.equals(strings[0], "whisper")){
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("send message-whisper-"+strings[2] + "-" + strings[1]);
-            messageField.clear();
-        }else {
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("send message-" + messageField.getText());
-            messageField.clear();
-        }
+    void sendIconClicked(MouseEvent event) {
+        sendMessage();
     }
 
     @FXML
@@ -137,8 +141,30 @@ public class ChatroomPage implements Initializable {
 
     }
 
+    public void sendMessage(){
+        String[] strings = messageField.getText().split("-");
+        try {
+            if (Objects.equals(strings[0], "whisper")) {
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF("send message-whisper-" + strings[2] + "-" + strings[1]);
+                messageField.clear();
+            } else {
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF("send message-" + messageField.getText());
+                messageField.clear();
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        messageField.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ENTER) {
+                sendMessage();
+            }
+        });
         firstField.setVisible(false);
         secondField.setVisible(false);
         new Thread(() -> {
@@ -152,7 +178,6 @@ public class ChatroomPage implements Initializable {
 
     public void splitCommand() throws IOException {
         while (true) {
-            System.out.println("room");
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
             switch (strings[0]) {

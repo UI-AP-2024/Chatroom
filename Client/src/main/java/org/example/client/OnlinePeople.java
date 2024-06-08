@@ -49,17 +49,16 @@ public class OnlinePeople implements Initializable {
     }
 
 
-        @FXML
+    @FXML
     void refreshIconClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
         dataOutputStream.writeUTF("online-people");
     }
 
-        @Override
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         new Thread(() -> {
             try {
-                System.out.println("before listener");
                 listener();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -68,7 +67,7 @@ public class OnlinePeople implements Initializable {
     }
 
     public void listener() throws IOException {
-        while (true){
+        while (true) {
             DataInputStream dataInputStream = new DataInputStream(ChatroomPage.socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
             switch (strings[0]) {
@@ -81,7 +80,7 @@ public class OnlinePeople implements Initializable {
                         }
                     }).start();
                 }
-                case "waitThread" ->{
+                case "waitThread" -> {
                     try {
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {

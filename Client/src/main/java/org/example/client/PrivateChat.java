@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class PrivateChat implements Initializable {
     public static int counter = 2;
-    public static String name ;
+    public static String name;
 
     @FXML
     private TextField messageField;
@@ -42,7 +42,7 @@ public class PrivateChat implements Initializable {
     @FXML
     void startMessagingButtonClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
-        dataOutputStream.writeUTF("pv-person-"+name);
+        dataOutputStream.writeUTF("pv-person-" + name);
         startMessagingButton.setDisable(true);
         startMessagingButton.setVisible(false);
     }
@@ -66,30 +66,31 @@ public class PrivateChat implements Initializable {
     }
 
     public void listener() throws IOException {
-        while (true){
+        while (true) {
             DataInputStream dataInputStream = new DataInputStream(ChatroomPage.socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
-            if (Objects.equals(strings[0], "null")){
+            if (Objects.equals(strings[0], "null")) {
                 System.out.println("nothing");
-            }else {
+            } else {
                 new Thread(() -> {
                     showMessages(strings);
                 }).start();
             }
         }
     }
-    synchronized public void showMessages(String[] string){
+
+    synchronized public void showMessages(String[] string) {
         Platform.runLater(() -> {
             BorderPane borderPane = new BorderPane();
             TextArea message = new TextArea();
             if (Objects.equals(string[0], "pv") && Objects.equals(string[1], "other")) {
-                message.setText(string[2]+"  ");
-                ChatroomPage.designMessage(borderPane,message);
+                message.setText(string[2] + "  ");
+                ChatroomPage.designMessage(borderPane, message);
                 message.setBackground(Background.fill(Paint.valueOf("black")));
                 messageGridPane.add(borderPane, 0, counter++);
             } else if (Objects.equals(string[0], "pv") && Objects.equals(string[1], "your")) {
-                message.setText(string[2]+"  ");
-                ChatroomPage.designMessage(borderPane,message);
+                message.setText(string[2] + "  ");
+                ChatroomPage.designMessage(borderPane, message);
                 message.setBackground(Background.fill(Paint.valueOf("purple")));
                 messageGridPane.add(borderPane, 1, counter++);
             }
