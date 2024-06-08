@@ -118,7 +118,7 @@ public class Client implements Runnable{
         for (Client client : clients) {
             if (Objects.equals(client.getName(), message[3])) {
                 DataOutputStream dataOutputStream = new DataOutputStream(client.getSocket().getOutputStream());
-                pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[3])));
+                pvMessages.add(new PvMessage(message[2], this.ID, client.getID()));
                 dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
                 if (client.getSocket().isConnected()) {
                     dataOutputStream.writeUTF("pv-" + "other-" + message[2]);

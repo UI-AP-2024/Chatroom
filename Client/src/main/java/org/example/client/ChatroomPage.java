@@ -149,6 +149,7 @@ public class ChatroomPage implements Initializable {
 
     public void splitCommand() throws IOException {
         while (true) {
+            System.out.println("room");
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
             switch (strings[0]) {
@@ -172,7 +173,7 @@ public class ChatroomPage implements Initializable {
                 }
                 case "whisper" -> {new Thread(() -> {
                     showWhisper(strings);
-                });}
+                }).start();}
             }
         }
     }

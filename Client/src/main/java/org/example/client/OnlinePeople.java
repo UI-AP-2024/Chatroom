@@ -66,6 +66,7 @@ public class OnlinePeople implements Initializable {
 
     public void listener() throws IOException {
         while (true){
+            System.out.println("online");
             DataInputStream dataInputStream = new DataInputStream(ChatroomPage.socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
             new Thread(() -> {
