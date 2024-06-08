@@ -33,7 +33,7 @@ public class Database {
 
     //---------------------
     public static void addClientsToList() throws SQLException {
-        String sqlFormat = String.format("SELECT * FROM Client");
+        String sqlFormat = "SELECT * FROM Client";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
@@ -42,7 +42,7 @@ public class Database {
     }
 
     public static void addMessageToList() throws SQLException, ParseException {
-        String sqlFormat = String.format("SELECT * FROM Message");
+        String sqlFormat = "SELECT * FROM Message";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
@@ -51,11 +51,21 @@ public class Database {
     }
 
     public static void addPvMessageToList() throws SQLException, ParseException {
-        String sqlFormat = String.format("SELECT * FROM PvMessage");
+        String sqlFormat = "SELECT * FROM PvMessage";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
             Client.pvMessages.add(new PvMessage(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getInt("SentTo"), resultSet.getString("Time")));
         }
+    }
+
+    public static void clearHistory(int first, int second) throws SQLException, ParseException {
+        String sqlFormat1 = String.format("DELETE FROM PvMessage WHERE sentBy = %s AND sentTo = %s", first, second);
+        String sqlFormat2 = String.format("DELETE FROM PvMessage WHERE sentBy = %s AND sentTo = %s", second, first);
+        Statement statement = connection.prepareStatement(sqlFormat1);
+        statement.execute(sqlFormat1);
+        statement = connection.prepareStatement(sqlFormat2);
+        statement.execute(sqlFormat2);
+        addPvMessageToList();
     }
 }
