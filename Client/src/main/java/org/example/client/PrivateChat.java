@@ -76,10 +76,14 @@ public class PrivateChat implements Initializable {
     }
 
     @FXML
-    void sendIconClicked(MouseEvent event) throws IOException {
+    void sendIconClicked(MouseEvent event) throws IOException, InterruptedException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
         if (Objects.equals(messageField.getText(), "clear history")){
             dataOutputStream.writeUTF("pv-clear-"+ name);
+            Thread.sleep(500);
+            dataOutputStream.writeUTF("waitThread");
+            Thread.sleep(500);
+            HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("online-people.fxml")).load()));
         }
         dataOutputStream.writeUTF("pv-message-" + messageField.getText() + "-" + name);
         messageField.clear();
