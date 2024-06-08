@@ -27,6 +27,8 @@ import java.util.ResourceBundle;
 
 public class OnlinePeople implements Initializable {
 
+    Thread runner;
+
     @FXML
     private GridPane peopleGridPane;
 
@@ -57,13 +59,14 @@ public class OnlinePeople implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        new Thread(() -> {
+        runner = new Thread(() -> {
             try {
                 listener();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        }).start();
+        });
+        runner.start();
     }
 
     public void listener() throws IOException {
@@ -82,7 +85,7 @@ public class OnlinePeople implements Initializable {
                 }
                 case "waitThread" -> {
                     try {
-                        Thread.currentThread().wait();
+                        runner.wait();
                     } catch (InterruptedException e) {
                         System.out.println(e.getMessage());
                     }

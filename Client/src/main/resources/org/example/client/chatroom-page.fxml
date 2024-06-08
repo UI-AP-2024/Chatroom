@@ -20,7 +20,7 @@
    <center>
       <AnchorPane prefHeight="558.0" prefWidth="466.0" style="-fx-background-color: silver; -fx-background-radius: 30 30 30 30; -fx-border-color: #745BBCFF; -fx-border-width: 4; -fx-border-radius: 27 27 27 27;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
-            <Insets bottom="50.0" right="85.0" top="50.0" />
+            <Insets bottom="50.0" right="35.0" top="50.0" />
          </BorderPane.margin>
          <children>
             <Button fx:id="pingButton" layoutX="29.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#pingButtonClicked" prefHeight="44.0" prefWidth="70.0" style="-fx-background-color: black; -fx-border-color: #745BBCFF; -fx-background-radius: 30 0 0 30; -fx-border-radius: 27 0 0 27; -fx-border-width: 3;" text="Ping" textFill="#745bbc">
@@ -55,7 +55,7 @@
                   </GridPane>
                </content>
             </ScrollPane>
-            <TextField fx:id="messageField" alignment="CENTER" layoutX="92.0" layoutY="533.0" onKeyPressed="#messageFieldPressed" prefHeight="42.0" prefWidth="274.0" promptText="Write you message" style="-fx-background-radius: 20 20 20 20;">
+            <TextField fx:id="messageField" alignment="CENTER" layoutX="92.0" layoutY="533.0" prefHeight="42.0" prefWidth="274.0" promptText="Write you message" style="-fx-background-radius: 20 20 20 20;">
                <font>
                   <Font name="System Bold Italic" size="16.0" />
                </font>
@@ -81,7 +81,7 @@
       </AnchorPane>
    </center>
    <left>
-      <AnchorPane prefHeight="40.0" prefWidth="106.0" style="-fx-background-color: silver; -fx-background-radius: 0 30 30 0;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="74.0" prefWidth="106.0" style="-fx-background-color: silver; -fx-background-radius: 0 30 30 0;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="660.0" />
          </BorderPane.margin>
@@ -94,4 +94,18 @@
          </children>
       </AnchorPane>
    </left>
+   <right>
+      <AnchorPane prefHeight="700.0" prefWidth="70.0" style="-fx-background-color: silver; -fx-background-radius: 0 0 0 25; -fx-border-color: white; -fx-border-radius: 0 0 0 25; -fx-border-width: 3;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="660.0" />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="exitButton" layoutX="9.0" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#exitButtonClicked" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 0 0 0 15; -fx-background-color: #745BBCFF; -fx-border-color: Black; -fx-border-radius: 0 0 0 15;" text="Exit">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </right>
 </BorderPane>
