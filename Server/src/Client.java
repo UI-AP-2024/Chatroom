@@ -2,6 +2,7 @@
 
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class Client implements Runnable{
+public class Client implements Runnable {
     static ArrayList<Socket> sockets = new ArrayList<>();
     static ArrayList<Client> clients = new ArrayList<>();
     static ArrayList<Message> messages = new ArrayList<>();
@@ -26,7 +27,7 @@ public class Client implements Runnable{
     private String password;
 
 
-    public Client(String name,Socket socket, String password) throws SQLException {
+    public Client(String name, Socket socket, String password) throws SQLException {
         this.name = name;
         this.ID = IDMaker++;
         this.socket = socket;
@@ -35,6 +36,7 @@ public class Client implements Runnable{
         clients.add(this);
         Database.addClient(this.ID, name, password);
     }
+
     public Client(String name, String password) {
         this.name = name;
         this.ID = IDMaker++;
@@ -53,9 +55,10 @@ public class Client implements Runnable{
             }
         }
     }
+
     public void recognizeCommand(String message) throws IOException, ParseException, SQLException {
         String[] command = message.split("-");
-        switch (command[0]){
+        switch (command[0]) {
             case "send message" -> {
                 if (Objects.equals(command[1], "whisper"))
                     sendWhisper(command);
@@ -68,7 +71,7 @@ public class Client implements Runnable{
             }
             case "search" -> {
                 switch (command[1]) {
-                    case "person"-> searchPerson(command[2]);
+                    case "person" -> searchPerson(command[2]);
                     case "time" -> searchTime(command[2], command[3]);
                 }
             }
@@ -98,8 +101,7 @@ public class Client implements Runnable{
                         if (message.getSentByID() == client.getID())
                             name = client.getName();
                     dataOutputStream.writeUTF("message-your-" + message.getContent() + "-" + name);
-                }
-                else {
+                } else {
                     for (Client client : clients)
                         if (message.getSentByID() == client.getID())
                             name = client.getName();
@@ -109,7 +111,7 @@ public class Client implements Runnable{
         }
     }
 
-    public void sendWhisper(String[] command) throws IOException{
+    public void sendWhisper(String[] command) throws IOException {
         String content = command[3];
         String name = command[2];
         Socket s = null;
@@ -119,18 +121,18 @@ public class Client implements Runnable{
                 break;
             }
         DataOutputStream dataOutputStream;
-        for (Socket socket : sockets){
-            dataOutputStream = new DataOutputStream (socket.getOutputStream());
-            if ( socket == this.socket)
+        for (Socket socket : sockets) {
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            if (socket == this.socket)
                 dataOutputStream.writeUTF("whisper-your-" + content + "-" + this.getName());
-            else if(socket == s)
+            else if (socket == s)
                 dataOutputStream.writeUTF("whisper-other-" + content + "-" + this.getName());
             else
                 dataOutputStream.writeUTF("whisper-them-" + content + "-" + this.getName());
         }
     }
 
-    public void sendPvPreviousMessages(String name) throws IOException{
+    public void sendPvPreviousMessages(String name) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         boolean check = false;
         for (PvMessage pvMessage : pvMessages) {
@@ -139,8 +141,7 @@ public class Client implements Runnable{
                     if (pvMessage.getSentByID() == this.getID() && pvMessage.getSentToID() == client.getID()) {
                         dataOutputStream.writeUTF("pv-" + "your-" + pvMessage.getContent());
                         check = true;
-                    }
-                    else if (pvMessage.getSentToID() == this.getID() && pvMessage.getSentByID() == client.getID()) {
+                    } else if (pvMessage.getSentToID() == this.getID() && pvMessage.getSentByID() == client.getID()) {
                         dataOutputStream.writeUTF("pv-" + "other-" + pvMessage.getContent());
                         check = true;
                     }
@@ -162,18 +163,19 @@ public class Client implements Runnable{
                     dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
                 }
                 break;
-           }
-       }
+            }
+        }
     }
 
     public void sendPing() throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("ping");
     }
+
     public void showOnlinePeople() throws IOException {
         StringBuilder result = new StringBuilder("people");
-        for (Client client : clients){
-            if (client.getSocket().isConnected() && this.socket!= client.socket){
+        for (Client client : clients) {
+            if (client.getSocket().isConnected() && this.socket != client.socket) {
                 result.append("-").append(client.getName()).append("-").append(client.getID());
             }
         }
@@ -181,6 +183,7 @@ public class Client implements Runnable{
         dataOutputStream.writeUTF(result.toString());
 
     }
+
     public void searchPerson(String person) throws IOException {
         StringBuilder result = new StringBuilder("person");
         for (Client clientReader : clients) {
@@ -194,6 +197,7 @@ public class Client implements Runnable{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(result.toString());
     }
+
     public void searchTime(String start, String end) throws IOException {
         StringBuilder result = new StringBuilder("time");
         for (Message msg : messages) {
@@ -211,10 +215,11 @@ public class Client implements Runnable{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(result.toString());
     }
-    public void showMessage(String string) throws IOException{
-        for (Socket socket : sockets){
-            DataOutputStream dataOutputStream = new DataOutputStream (socket.getOutputStream());
-            if ( socket != this.socket )
+
+    public void showMessage(String string) throws IOException {
+        for (Socket socket : sockets) {
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            if (socket != this.socket)
                 dataOutputStream.writeUTF("message-other-" + string + "-" + this.getName());
             else
                 dataOutputStream.writeUTF("message-your-" + string + "-" + this.getName());
@@ -223,10 +228,9 @@ public class Client implements Runnable{
 
     public static void handleLoginAndSignup(String input, Socket socket) throws SQLException {
         String[] strings = input.split("-");
-        if (Objects.equals(strings[0],"login")){
+        if (Objects.equals(strings[0], "login")) {
             login(strings[1], strings[2], socket);
-        }
-        else if (Objects.equals(strings[0],"signup")) {
+        } else if (Objects.equals(strings[0], "signup")) {
             signup(strings[1], strings[2], socket);
         }
     }
