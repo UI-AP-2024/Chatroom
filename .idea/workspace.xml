@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9656514-a22b-4677-8f7b-9c479a1a5771" name="Changes" comment="" />
+    <list default="true" id="d9656514-a22b-4677-8f7b-9c479a1a5771" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/main/java/org/example/client/ChatroomPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/main/java/org/example/client/ChatroomPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/main/java/org/example/client/OnlinePeople.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/main/java/org/example/client/OnlinePeople.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/main/java/org/example/client/PrivateChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/main/java/org/example/client/PrivateChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/main/resources/org/example/client/online-people.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/main/resources/org/example/client/online-people.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,7 +37,11 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/DELL/Desktop/New folder/secondproject-chatroom-mohsen-masih/Server",
+    "last_opened_file_path": "C:/Users/DELL/Desktop/secondproject-chatroom-mohsen-masih",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -46,6 +56,7 @@
       <updated>1717507377453</updated>
       <workItem from="1717507378220" duration="163000" />
       <workItem from="1717507551345" duration="17000" />
+      <workItem from="1717823443056" duration="3237000" />
     </task>
     <servers />
   </component>

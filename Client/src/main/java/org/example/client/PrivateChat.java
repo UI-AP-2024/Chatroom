@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class PrivateChat implements Initializable {
     public static int counter = 2;
-    public static String personID ;
+    public static String name ;
 
     @FXML
     private TextField messageField;
@@ -42,7 +42,7 @@ public class PrivateChat implements Initializable {
     @FXML
     void startMessagingButtonClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
-        dataOutputStream.writeUTF("pv-person-"+personID);
+        dataOutputStream.writeUTF("pv-person-"+name);
         startMessagingButton.setDisable(true);
         startMessagingButton.setVisible(false);
     }
@@ -50,7 +50,7 @@ public class PrivateChat implements Initializable {
     @FXML
     void sendIconClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
-        dataOutputStream.writeUTF("pv-message-" + messageField.getText() + "-" + personID);
+        dataOutputStream.writeUTF("pv-message-" + messageField.getText() + "-" + name);
         messageField.clear();
     }
 

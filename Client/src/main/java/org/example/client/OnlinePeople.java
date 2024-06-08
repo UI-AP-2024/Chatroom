@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -33,6 +34,19 @@ public class OnlinePeople implements Initializable {
     private FontAwesomeIcon refreshIcon;
 
     @FXML
+    private FontAwesomeIcon sendIcon;
+
+    @FXML
+    private TextField textField;
+
+    @FXML
+    void sendIconClicked(MouseEvent event) throws IOException {
+        PrivateChat.name = textField.getText();
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("private-chat.fxml")).load()));
+    }
+
+
+        @FXML
     void refreshIconClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
         dataOutputStream.writeUTF("online-people");
@@ -73,19 +87,8 @@ public class OnlinePeople implements Initializable {
                 borderPane.setId(strings[i]);
                 borderPane.setTop(label);
                 label.setTextAlignment(TextAlignment.CENTER);
-                borderPane.setOnMouseClicked(event -> {
-                    try {
-                        chatroomRequest(borderPane);
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
-                    }
-                });
                 peopleGridPane.add(borderPane, 0, i);
             }
         });
-    }
-    public void chatroomRequest(BorderPane borderPane) throws IOException {
-        PrivateChat.personID = borderPane.getId();
-        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("private-chat.fxml")).load()));
     }
 }

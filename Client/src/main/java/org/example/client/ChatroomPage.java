@@ -115,9 +115,16 @@ public class ChatroomPage implements Initializable {
 
     @FXML
     void sendIconClicked(MouseEvent event) throws IOException {
-        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeUTF("send message-" + messageField.getText());
-        messageField.clear();
+        String[] strings = messageField.getText().split("-");
+        if (Objects.equals(strings[0], "whisper")){
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("send message-whisper-"+strings[2] + "-" + strings[1]);
+            messageField.clear();
+        }else {
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("send message-" + messageField.getText());
+            messageField.clear();
+        }
     }
 
     @FXML
@@ -161,6 +168,31 @@ public class ChatroomPage implements Initializable {
                 case "ping" -> {
                     new Thread(this::showPing).start();
                 }
+                case "whisper" -> {new Thread(() -> {
+                    showWhisper(strings);
+                });}
+            }
+        }
+    }
+    public void showWhisper(String[] strings){
+        switch (strings[1]){
+            case "other" -> {
+                Platform.runLater(() -> {
+                    BorderPane borderPane = new BorderPane();
+                    TextArea message = new TextArea();
+                    message.setText(strings[2]+"  ");
+                    designMessage(borderPane,message);
+                    message.setBackground(Background.fill(Paint.valueOf("blue")));
+                    messageGridPane.add(borderPane, 0, counter++);
+                });
+            }
+            case "your" -> {
+                BorderPane borderPane = new BorderPane();
+                TextArea message = new TextArea();
+                message.setText(strings[2]+"  ");
+                designMessage(borderPane,message);
+                message.setBackground(Background.fill(Paint.valueOf("blue")));
+                messageGridPane.add(borderPane, 2, counter++);
             }
         }
     }
@@ -198,7 +230,7 @@ public class ChatroomPage implements Initializable {
     }
     public static void designMessage(BorderPane borderPane , TextArea message){
         message.setFont(Font.font(18));
-        message.setPadding(new Insets(10 ,0,10,10));
+        message.setPadding(new Insets(10 ,10,10,10));
         message.setWrapText(true);
         message.setMaxWidth(160);
         borderPane.setCenter(message);
