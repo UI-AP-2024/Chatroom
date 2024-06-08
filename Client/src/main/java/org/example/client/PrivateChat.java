@@ -31,6 +31,9 @@ public class PrivateChat implements Initializable {
     public static String name;
 
     @FXML
+    private Button blockButton;
+
+    @FXML
     private FontAwesomeIcon backIcon;
 
     @FXML
@@ -44,6 +47,16 @@ public class PrivateChat implements Initializable {
 
     @FXML
     private Button startMessagingButton;
+
+    @FXML
+    void blockButtonClicked(MouseEvent event) throws IOException, InterruptedException {
+        DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
+        dataOutputStream.writeUTF("block-"+name);
+        Thread.sleep(500);
+        dataOutputStream.writeUTF("waitThread");
+        Thread.sleep(500);
+        HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("chatroom-page.fxml")).load()));
+    }
 
     @FXML
     void backIconClicked(MouseEvent event) throws IOException, InterruptedException {
@@ -65,6 +78,9 @@ public class PrivateChat implements Initializable {
     @FXML
     void sendIconClicked(MouseEvent event) throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
+        if (Objects.equals(messageField.getText(), "clear history")){
+            dataOutputStream.writeUTF("pv-clear-"+ name);
+        }
         dataOutputStream.writeUTF("pv-message-" + messageField.getText() + "-" + name);
         messageField.clear();
     }

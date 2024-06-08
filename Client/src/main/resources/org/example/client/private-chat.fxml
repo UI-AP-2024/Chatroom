@@ -35,9 +35,9 @@
                   <Font name="System Bold Italic" size="16.0" />
                </font>
                <effect>
-                  <DropShadow height="33.34" radius="16.01" spread="0.39" width="32.7">
+                  <DropShadow height="33.02" radius="15.93" spread="0.39" width="32.7">
                      <color>
-                        <Color red="0.6166666746139526" blue="1.0" />
+                        <Color red="0.615686297416687" blue="1.0" />
                      </color>
                   </DropShadow>
                </effect>
@@ -53,6 +53,18 @@
       <AnchorPane prefHeight="69.0" prefWidth="74.0" style="-fx-background-color: silver; -fx-background-radius: 0 0 45 0; -fx-border-color: white; -fx-border-radius: 0 0 42 0; -fx-border-width: 0 3 3 0;">
          <children>
             <FontAwesomeIcon fx:id="backIcon" glyphName="SHARE" layoutX="14.0" layoutY="46.0" onMouseClicked="#backIconClicked" rotate="180.0" size="3em" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="501.0" prefHeight="52.0" prefWidth="99.0" style="-fx-background-color: silver; -fx-background-radius: 0 0 0 25; -fx-border-color: white; -fx-border-radius: 0 0 0 25; -fx-border-width: 3;">
+         <children>
+            <Button fx:id="blockButton" layoutX="23.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#blockButtonClicked" prefHeight="30.0" prefWidth="65.0" style="-fx-background-color: #9d00ff; -fx-background-radius: 0 0 0 18; -fx-border-color: black; -fx-border-radius: 0 0 0 15; -fx-border-width: 2;" text="Block">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
          </children>
       </AnchorPane>
    </children>

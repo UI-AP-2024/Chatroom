@@ -280,6 +280,5 @@ public class ChatroomPage implements Initializable {
         message.setWrapText(true);
         message.setMaxWidth(160);
         borderPane.setCenter(message);
-        message.setDisable(true);
     }
 }
