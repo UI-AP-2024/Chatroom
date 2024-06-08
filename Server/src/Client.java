@@ -35,7 +35,7 @@ public class Client implements Runnable{
         clients.add(this);
         Database.addClient(this.ID, name, password);
     }
-    public Client(String name, String password) throws SQLException {
+    public Client(String name, String password) {
         this.name = name;
         this.ID = IDMaker++;
         this.password = password;
@@ -92,15 +92,14 @@ public class Client implements Runnable{
         for (Socket s : sockets) {
             DataOutputStream dataOutputStream = new DataOutputStream(s.getOutputStream());
             for (Message message : messages) {
+                String name = "";
                 if (s == this.socket) {
-                    String name = "";
                     for (Client client : clients)
                         if (message.getSentByID() == client.getID())
                             name = client.getName();
                     dataOutputStream.writeUTF("message-your-" + message.getContent() + "-" + name);
                 }
                 else {
-                    String name = "";
                     for (Client client : clients)
                         if (message.getSentByID() == client.getID())
                             name = client.getName();
