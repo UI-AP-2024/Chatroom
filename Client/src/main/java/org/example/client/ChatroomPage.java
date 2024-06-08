@@ -10,6 +10,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.Effect;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -175,26 +177,27 @@ public class ChatroomPage implements Initializable {
         }
     }
     public void showWhisper(String[] strings){
-        switch (strings[1]){
-            case "other" -> {
-                Platform.runLater(() -> {
-                    BorderPane borderPane = new BorderPane();
-                    TextArea message = new TextArea();
-                    message.setText(strings[2]+"  ");
-                    designMessage(borderPane,message);
-                    message.setBackground(Background.fill(Paint.valueOf("blue")));
-                    messageGridPane.add(borderPane, 0, counter++);
-                });
-            }
-            case "your" -> {
-                BorderPane borderPane = new BorderPane();
-                TextArea message = new TextArea();
+        Platform.runLater(() -> {
+            BorderPane borderPane = new BorderPane();
+            TextArea message = new TextArea();
+            if (Objects.equals(strings[1], "other")) {
+                message.setText(strings[2]+"  ");
+                designMessage(borderPane,message);
+                message.setBackground(Background.fill(Paint.valueOf("blue")));
+                messageGridPane.add(borderPane, 0, counter++);
+            } else if (Objects.equals(strings[1], "your")) {
                 message.setText(strings[2]+"  ");
                 designMessage(borderPane,message);
                 message.setBackground(Background.fill(Paint.valueOf("blue")));
                 messageGridPane.add(borderPane, 2, counter++);
+            }else {
+                message.setText(strings[2]+"  ");
+                designMessage(borderPane,message);
+                message.setBackground(Background.fill(Paint.valueOf("blue")));
+                borderPane.setEffect(new BoxBlur());
+                messageGridPane.add(borderPane, 2, counter++);
             }
-        }
+        });
     }
 
     public void showPing(){
