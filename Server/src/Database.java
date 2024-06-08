@@ -55,7 +55,7 @@ public class Database {
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
-            Client.messages.add(new PvMessage(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getInt("SentTo"), resultSet.getString("Time")));
+            Client.pvMessages.add(new PvMessage(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getInt("SentTo"), resultSet.getString("Time")));
         }
     }
 }
