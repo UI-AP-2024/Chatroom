@@ -2,7 +2,6 @@
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,8 +49,12 @@ public class Client implements Runnable{
         String[] command = message.split("-");
         switch (command[0]){
             case "send message" -> {
-                messages.add(new Message(command[1],  this.getID()));
-                showMessage(command[1]);
+                if (Objects.equals(command[1], "whisper"))
+                    sendWhisper(command);
+                else {
+                    messages.add(new Message(command[1],  this.getID()));
+                    showMessage(command[1]);
+                }
             }
             case "search" -> {
                 switch (command[1]) {
@@ -67,6 +70,25 @@ public class Client implements Runnable{
                 else
                     sendPreviousMessages(command[2]);
             }
+        }
+    }
+
+    public void sendWhisper(String[] command) throws IOException{
+        String content = command[3];
+        String name = command[2];
+        Socket s = null;
+        for (Client client : clients)
+            if (Objects.equals(client.getName(), name)) {
+                s = client.socket;
+                break;
+            }
+        DataOutputStream dataOutputStream;
+        for (Socket socket : sockets){
+            dataOutputStream = new DataOutputStream (socket.getOutputStream());
+            if ( socket == this.socket || socket == s)
+                dataOutputStream.writeUTF("whisper-your-" + content + "-" + this.getName());
+            else
+                dataOutputStream.writeUTF("whisper-other-" + content + "-" + this.getName());
         }
     }
 
