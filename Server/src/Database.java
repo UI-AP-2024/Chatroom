@@ -51,4 +51,14 @@ public class Database {
             Client.pvMessages.add(new PvMessage(resultSet.getString("Content"), resultSet.getInt("SentBy"), resultSet.getInt("SentTo"), resultSet.getString("Time")));
         }
     }
+
+    public static void clearHistory(int first, int second) throws SQLException, ParseException {
+        String sqlFormat1 = String.format("DELETE FROM PvMessage WHERE sentBy = %s AND sentTo = %s", first, second);
+        String sqlFormat2 = String.format("DELETE FROM PvMessage WHERE sentBy = %s AND sentTo = %s", second, first);
+        Statement statement = connection.prepareStatement(sqlFormat1);
+        statement.execute(sqlFormat1);
+        statement = connection.prepareStatement(sqlFormat2);
+        statement.execute(sqlFormat2);
+        addPvMessageToList();
+    }
 }

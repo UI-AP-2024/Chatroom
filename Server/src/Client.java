@@ -75,7 +75,16 @@ public class Client implements Runnable{
             case "online" -> showOnlinePeople();
             case "ping" -> sendPing();
             case "pv" -> {
-                if (Objects.equals(command[1], "message"))
+                if (Objects.equals(command[1], "clear")) {
+                    int id = 0;
+                    for (Client client : clients)
+                        if (Objects.equals(client.getName(), command[2])) {
+                            id = client.getID();
+                            break;
+                        }
+                    Database.clearHistory(this.getID(), id);
+                }
+                else if (Objects.equals(command[1], "message"))
                     sendToPv(command);
                 else
                     sendPvPreviousMessages(command[2]);
