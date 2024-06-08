@@ -70,18 +70,20 @@ public class Client implements Runnable{
         }
     }
 
-    public void sendPreviousMessages(String id) throws IOException{
+    public void sendPreviousMessages(String name) throws IOException{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         boolean check = false;
         for (PvMessage pvMessage : pvMessages) {
-            if (pvMessage.getSentByID() == this.getID() && pvMessage.getSentToID() == Integer.parseInt(id)) {
-                dataOutputStream.writeUTF("pv-" + "your-" + pvMessage.getContent());
-                check = true;
-            }
-            else if (pvMessage.getSentToID() == this.getID() && pvMessage.getSentByID() == Integer.parseInt(id)) {
-                dataOutputStream.writeUTF("pv-" + "other-" + pvMessage.getContent());
-                check = true;
-            }
+            for (Client client : clients)
+                if (Objects.equals(client.getName(), name))
+                    if (pvMessage.getSentByID() == this.getID() && pvMessage.getSentToID() == client.getID()) {
+                        dataOutputStream.writeUTF("pv-" + "your-" + pvMessage.getContent());
+                        check = true;
+                    }
+                    else if (pvMessage.getSentToID() == this.getID() && pvMessage.getSentByID() == client.getID()) {
+                        dataOutputStream.writeUTF("pv-" + "other-" + pvMessage.getContent());
+                        check = true;
+                    }
         }
         if (!check)
             dataOutputStream.writeUTF("null");
@@ -89,15 +91,15 @@ public class Client implements Runnable{
 
     public void sendToPv(String[] message) throws ParseException, IOException {
         DataOutputStream dataOutputStream1 = new DataOutputStream(socket.getOutputStream());
-       for (Client client : clients) {
-           if (client.getID() == Integer.parseInt(message[3])) {
-               DataOutputStream dataOutputStream = new DataOutputStream(client.getSocket().getOutputStream());
-               pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[3])));
-               dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
-               if (client.getSocket().isConnected()) {
-                   dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
-               }
-               break;
+        for (Client client : clients) {
+            if (Objects.equals(client.getName(), message[3])) {
+                DataOutputStream dataOutputStream = new DataOutputStream(client.getSocket().getOutputStream());
+                pvMessages.add(new PvMessage(message[2], this.ID, Integer.parseInt(message[3])));
+                dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
+                if (client.getSocket().isConnected()) {
+                    dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
+                }
+                break;
            }
        }
     }
