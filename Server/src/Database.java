@@ -14,15 +14,18 @@ public class Database {
         System.out.println("Connected");
     }
     public static void addClient(int ID, String name, String pass) throws SQLException {
-        System.out.println(ID + "  " + name + "   " + pass);
-        String sqlFormat = String.format("INSERT INTO  client (ID, Name, Password) VALUES (%s, '%s', '%s')", ID, name, pass);
+        String sqlFormat = String.format("INSERT INTO  Client (ID, Name, Password) VALUES (%s, '%s', '%s')", ID, name, pass);
         Statement statement = connection.prepareStatement(sqlFormat);
         statement.execute(sqlFormat);
     }
-    public void addMessage() {
-
+    public static void addMessage(String content, String time, int sentBy) throws SQLException {
+        String sqlFormat = String.format("INSERT INTO  Message (Content, Time, SentBy) VALUES ('%s', '%s', %s)", content, time, sentBy);
+        Statement statement = connection.prepareStatement(sqlFormat);
+        statement.execute(sqlFormat);
     }
-    public void addPvMessage() {
-
+    public static void addPvMessage(String content, String time, int sentBy, int sentTo) throws SQLException {
+        String sqlFormat = String.format("INSERT INTO  PvMessage (Content, Time, SentBy, SentTo) VALUES ('%s', '%s', %s, %s)", content, time, sentBy, sentTo);
+        Statement statement = connection.prepareStatement(sqlFormat);
+        statement.execute(sqlFormat);
     }
 }

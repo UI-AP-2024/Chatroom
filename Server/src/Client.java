@@ -40,21 +40,22 @@ public class Client implements Runnable{
         while (socket.isConnected()) {
             try {
                 recognizeCommand((new DataInputStream(socket.getInputStream())).readUTF());
-            } catch (IOException | ParseException e) {
+            } catch (IOException | ParseException | SQLException e) {
                 System.out.println(e.getMessage());
                 break;
             }
         }
     }
-
-    public void recognizeCommand(String message) throws IOException, ParseException {
+    public void recognizeCommand(String message) throws IOException, ParseException, SQLException {
         String[] command = message.split("-");
         switch (command[0]){
             case "send message" -> {
                 if (Objects.equals(command[1], "whisper"))
                     sendWhisper(command);
                 else {
-                    messages.add(new Message(command[1],  this.getID()));
+                    Message m = new Message(command[1], this.ID);
+                    messages.add(m);
+                    Database.addMessage(m.getContent(), String.valueOf(m.getTime()), m.getSentByID());
                     showMessage(command[1]);
                 }
             }
@@ -119,12 +120,14 @@ public class Client implements Runnable{
             dataOutputStream.writeUTF("null");
     }
 
-    public void sendToPv(String[] message) throws ParseException, IOException {
+    public void sendToPv(String[] message) throws ParseException, IOException, SQLException {
         DataOutputStream dataOutputStream1 = new DataOutputStream(socket.getOutputStream());
         for (Client client : clients) {
             if (Objects.equals(client.getName(), message[3])) {
                 DataOutputStream dataOutputStream = new DataOutputStream(client.getSocket().getOutputStream());
-                pvMessages.add(new PvMessage(message[2], this.ID, client.getID()));
+                PvMessage pvMessage = new PvMessage(message[2], this.ID, client.getID());
+                pvMessages.add(pvMessage);
+                Database.addPvMessage(pvMessage.getContent(), String.valueOf(pvMessage.getTime()), pvMessage.getSentByID(), pvMessage.getSentToID());
                 dataOutputStream1.writeUTF("pv-" + "your-" + message[2]);
                 if (client.getSocket().isConnected()) {
                     dataOutputStream.writeUTF("pv-" + "other-" + message[2]);
