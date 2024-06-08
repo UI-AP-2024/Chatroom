@@ -70,6 +70,10 @@ public class Client implements Runnable{
                 else
                     sendPreviousMessages(command[2]);
             }
+            case "waitThread" -> {
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                dataOutputStream.writeUTF("waitThread");
+            }
         }
     }
 
@@ -128,11 +132,10 @@ public class Client implements Runnable{
        }
     }
 
-    public void sendPing() throws IOException{
+    public void sendPing() throws IOException {
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF("ping");
     }
-
     public void showOnlinePeople() throws IOException {
         StringBuilder result = new StringBuilder("people");
         for (Client client : clients){
