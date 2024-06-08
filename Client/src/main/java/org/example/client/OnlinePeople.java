@@ -40,7 +40,10 @@ public class OnlinePeople implements Initializable {
     private TextField textField;
 
     @FXML
-    void sendIconClicked(MouseEvent event) throws IOException {
+    void sendIconClicked(MouseEvent event) throws IOException, InterruptedException {
+        DataOutputStream dataOutputStream = new DataOutputStream(ChatroomPage.socket.getOutputStream());
+        dataOutputStream.writeUTF("waitThread");
+        Thread.sleep(500);
         PrivateChat.name = textField.getText();
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("private-chat.fxml")).load()));
     }
@@ -66,16 +69,26 @@ public class OnlinePeople implements Initializable {
 
     public void listener() throws IOException {
         while (true){
-            System.out.println("online");
             DataInputStream dataInputStream = new DataInputStream(ChatroomPage.socket.getInputStream());
             String[] strings = dataInputStream.readUTF().split("-");
-            new Thread(() -> {
-                try {
-                    showPeople(strings);
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
+            switch (strings[0]) {
+                case "people" -> {
+                    new Thread(() -> {
+                        try {
+                            showPeople(strings);
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }).start();
                 }
-            }).start();
+                case "waitThread" ->{
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
         }
     }
 

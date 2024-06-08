@@ -96,7 +96,10 @@ public class ChatroomPage implements Initializable {
     }
 
     @FXML
-    void privateChatButtonClicked(MouseEvent event) throws IOException {
+    void privateChatButtonClicked(MouseEvent event) throws IOException, InterruptedException {
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        dataOutputStream.writeUTF("waitThread");
+        Thread.sleep(500);
         HelloApplication.myStage.setScene(new Scene(new FXMLLoader(HelloApplication.class.getResource("online-people.fxml")).load()));
     }
 
@@ -174,6 +177,13 @@ public class ChatroomPage implements Initializable {
                 case "whisper" -> {new Thread(() -> {
                     showWhisper(strings);
                 }).start();}
+                case "waitThread" -> {
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
             }
         }
     }
