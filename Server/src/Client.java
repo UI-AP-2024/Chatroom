@@ -78,11 +78,34 @@ public class Client implements Runnable{
                 if (Objects.equals(command[1], "message"))
                     sendToPv(command);
                 else
-                    sendPreviousMessages(command[2]);
+                    sendPvPreviousMessages(command[2]);
             }
             case "waitThread" -> {
                 DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataOutputStream.writeUTF("waitThread");
+            }
+            case "all" -> sendRoomPreviousMessages();
+        }
+    }
+
+    public void sendRoomPreviousMessages() throws IOException {
+        for (Socket s : sockets) {
+            DataOutputStream dataOutputStream = new DataOutputStream(s.getOutputStream());
+            for (Message message : messages) {
+                if (s == this.socket) {
+                    String name = "";
+                    for (Client client : clients)
+                        if (message.getSentByID() == client.getID())
+                            name = client.getName();
+                    dataOutputStream.writeUTF("message-your-" + message.getContent() + "-" + name);
+                }
+                else {
+                    String name = "";
+                    for (Client client : clients)
+                        if (message.getSentByID() == client.getID())
+                            name = client.getName();
+                    dataOutputStream.writeUTF("message-other-" + message.getContent() + "-" + name);
+                }
             }
         }
     }
@@ -108,7 +131,7 @@ public class Client implements Runnable{
         }
     }
 
-    public void sendPreviousMessages(String name) throws IOException{
+    public void sendPvPreviousMessages(String name) throws IOException{
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         boolean check = false;
         for (PvMessage pvMessage : pvMessages) {
