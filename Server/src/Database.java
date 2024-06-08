@@ -28,7 +28,7 @@ public class Database {
     }
     //---------------------
     public static void addClientsToList() throws SQLException {
-        String sqlFormat = String.format("SELECT * FROM Client");
+        String sqlFormat = "SELECT * FROM Client";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
@@ -36,7 +36,7 @@ public class Database {
         }
     }
     public static void addMessageToList() throws SQLException, ParseException {
-        String sqlFormat = String.format("SELECT * FROM Message");
+        String sqlFormat = "SELECT * FROM Message";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
@@ -44,7 +44,7 @@ public class Database {
         }
     }
     public static void addPvMessageToList() throws SQLException, ParseException {
-        String sqlFormat = String.format("SELECT * FROM PvMessage");
+        String sqlFormat = "SELECT * FROM PvMessage";
         Statement statement = connection.prepareStatement(sqlFormat);
         ResultSet resultSet = statement.executeQuery(sqlFormat);
         while (resultSet.next()) {
