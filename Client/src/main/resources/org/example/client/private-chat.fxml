@@ -50,5 +50,10 @@
             </Button>
          </children>
       </AnchorPane>
+      <AnchorPane prefHeight="69.0" prefWidth="74.0" style="-fx-background-color: silver; -fx-background-radius: 0 0 45 0; -fx-border-color: white; -fx-border-radius: 0 0 42 0; -fx-border-width: 0 3 3 0;">
+         <children>
+            <FontAwesomeIcon fx:id="backIcon" glyphName="SHARE" layoutX="14.0" layoutY="46.0" onMouseClicked="#backIconClicked" rotate="180.0" size="3em" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

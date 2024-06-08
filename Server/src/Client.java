@@ -92,30 +92,12 @@ public class Client implements Runnable {
     }
 
     public void sendRoomPreviousMessages() throws IOException {
-<<<<<<< HEAD
-        for (Socket s : sockets) {
-            DataOutputStream dataOutputStream = new DataOutputStream(s.getOutputStream());
-            for (Message message : messages) {
-                String name = "";
-                if (s == this.socket) {
-                    for (Client client : clients)
-                        if (message.getSentByID() == client.getID())
-                            name = client.getName();
-                    dataOutputStream.writeUTF("message-your-" + message.getContent() + "-" + name);
-                } else {
-                    for (Client client : clients)
-                        if (message.getSentByID() == client.getID())
-                            name = client.getName();
-                    dataOutputStream.writeUTF("message-other-" + message.getContent() + "-" + name);
-                }
-=======
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         for (Message message : messages) {
             if (message.getSentByID() == this.getID()) {
                 dataOutputStream.writeUTF("message-your-" + message.getContent() + "-" + this.getName());
             } else {
                 dataOutputStream.writeUTF("message-other-" + message.getContent() + "-" + this.getName());
->>>>>>> d0fd524075d978a7a4ab7624a01cde9255bdcc28
             }
         }
     }

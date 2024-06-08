@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ChatroomPage implements Initializable {
+    Thread runner;
     static int counter = 2;
     public static Socket socket;
     private long start;
@@ -75,7 +76,12 @@ public class ChatroomPage implements Initializable {
     private FontAwesomeIcon stickerIcon;
 
     @FXML
-    void messageFieldPressed(KeyEvent event) throws IOException {
+    private Button exitButton;
+
+
+    @FXML
+    void exitButtonClicked(MouseEvent event) {
+        System.exit(0);
     }
 
     @FXML
@@ -167,13 +173,14 @@ public class ChatroomPage implements Initializable {
         });
         firstField.setVisible(false);
         secondField.setVisible(false);
-        new Thread(() -> {
+        runner = new Thread(() -> {
             try {
                 splitCommand();
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-        }).start();
+        });
+        runner.start();
     }
 
     public void splitCommand() throws IOException {
@@ -204,7 +211,7 @@ public class ChatroomPage implements Initializable {
                 }).start();}
                 case "waitThread" -> {
                     try {
-                        Thread.currentThread().wait();
+                        runner.wait();
                     } catch (InterruptedException e) {
                         System.out.println(e.getMessage());
                     }
