@@ -85,10 +85,12 @@ public class Client implements Runnable{
         DataOutputStream dataOutputStream;
         for (Socket socket : sockets){
             dataOutputStream = new DataOutputStream (socket.getOutputStream());
-            if ( socket == this.socket || socket == s)
+            if ( socket == this.socket)
                 dataOutputStream.writeUTF("whisper-your-" + content + "-" + this.getName());
-            else
+            else if(socket == s)
                 dataOutputStream.writeUTF("whisper-other-" + content + "-" + this.getName());
+            else
+                dataOutputStream.writeUTF("whisper-them-" + content + "-" + this.getName());
         }
     }
 
