@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" styleClass="first" stylesheets="@../../../Css/BackGround.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.client.ChatroomPage">
+   <center>
+      <AnchorPane prefHeight="558.0" prefWidth="466.0" style="-fx-background-color: silver; -fx-background-radius: 30 30 30 30; -fx-border-color: #745BBCFF; -fx-border-width: 4; -fx-border-radius: 27 27 27 27;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="50.0" right="35.0" top="50.0" />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="pingButton" layoutX="29.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#pingButtonClicked" prefHeight="44.0" prefWidth="70.0" style="-fx-background-color: black; -fx-border-color: #745BBCFF; -fx-background-radius: 30 0 0 30; -fx-border-radius: 27 0 0 27; -fx-border-width: 3;" text="Ping" textFill="#745bbc">
+               <font>
+                  <Font name="System Bold Italic" size="17.0" />
+               </font>
+            </Button>
+            <MenuButton fx:id="searchButton" contentDisplay="CENTER" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="90.0" style="-fx-background-radius: 0 30 30 0; -fx-background-color: black; -fx-border-color: #745BBCFF; -fx-border-width: 3; -fx-border-radius: 0 27 27 0;" text="Search" textFill="#745bbc">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#timeToTimeSearchClicked" text="Time" />
+                <MenuItem mnemonicParsing="false" onAction="#personSearchClicked" text="Person" />
+              </items>
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </MenuButton>
+            <TextField fx:id="firstField" alignment="CENTER" layoutX="206.0" layoutY="22.0" prefHeight="27.0" prefWidth="90.0" style="-fx-background-color: #745BBCFF; -fx-border-color: black;" AnchorPane.leftAnchor="206.0" />
+            <TextField fx:id="secondField" layoutX="304.0" layoutY="22.0" prefHeight="27.0" prefWidth="90.0" style="-fx-background-color: #745BBCFF; -fx-border-color: black;" AnchorPane.leftAnchor="304.0" />
+            <FontAwesomeIcon fx:id="searchIcon" glyphName="SEARCH" layoutX="404.0" layoutY="46.0" onMouseClicked="#searchIconClicked" size="2.5em" AnchorPane.topAnchor="17.0" />
+            <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" layoutX="40.0" layoutY="76.0" prefHeight="446.0" prefWidth="378.0" style="-fx-background-color: black;" vbarPolicy="ALWAYS">
+               <content>
+                  <GridPane fx:id="messageGridPane" prefHeight="444.0" prefWidth="355.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="400.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+            <TextField fx:id="messageField" alignment="CENTER" layoutX="92.0" layoutY="533.0" prefHeight="42.0" prefWidth="274.0" promptText="Write you message" style="-fx-background-radius: 20 20 20 20;">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets left="10.0" right="10.0" />
+               </opaqueInsets>
+            </TextField>
+            <FontAwesomeIcon fx:id="stickerIcon" glyphName="SMILE_ALT" layoutX="49.0" layoutY="567.0" onMouseClicked="#stickerIconClicked" size="3em" />
+            <FontAwesomeIcon fx:id="sendIcon" glyphName="SEND_ALT" layoutX="371.0" layoutY="564.0" onMouseClicked="#sendIconClicked" size="2.5em" wrappingWidth="32.800048828125" />
+            <Button fx:id="startMessagingButton" layoutX="92.0" layoutY="533.0" mnemonicParsing="false" onMouseClicked="#startMessagingButtonClicked" prefHeight="42.0" prefWidth="274.0" style="-fx-background-radius: 30 30 30 30;" text="Start messaging">
+               <effect>
+                  <DropShadow height="32.7" radius="19.942500000000003" spread="0.32" width="49.07">
+                     <color>
+                        <Color red="0.6096413135528564" green="0.08327485620975494" blue="0.9368420839309692" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <font>
+                  <Font name="System Bold Italic" size="19.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </center>
+   <left>
+      <AnchorPane prefHeight="74.0" prefWidth="106.0" style="-fx-background-color: silver; -fx-background-radius: 0 30 30 0;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="660.0" />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="privateChatButton" contentDisplay="CENTER" layoutX="2.0" layoutY="3.0" mnemonicParsing="false" onMouseClicked="#privateChatButtonClicked" prefHeight="34.0" prefWidth="101.0" style="-fx-background-radius: 0 30 30 0; -fx-background-color: black; -fx-border-color: #745BBCFF; -fx-border-width: 3; -fx-border-radius: 0 27 27 0;" text="Private Chat" textFill="#745bbc">
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="700.0" prefWidth="70.0" style="-fx-background-color: silver; -fx-background-radius: 0 0 0 25; -fx-border-color: white; -fx-border-radius: 0 0 0 25; -fx-border-width: 3;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="660.0" />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="exitButton" layoutX="9.0" layoutY="8.0" mnemonicParsing="false" onMouseClicked="#exitButtonClicked" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 0 0 0 15; -fx-background-color: #745BBCFF; -fx-border-color: Black; -fx-border-radius: 0 0 0 15;" text="Exit">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>
